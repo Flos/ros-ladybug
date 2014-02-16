@@ -1,0 +1,11 @@
+Header header
+uint32 height
+uint32 width
+string encoding
+string serial_number
+string camera
+uint32 camera_number
+uint32 step
+uint8[] r
+uint8[] g
+uint8[] b
