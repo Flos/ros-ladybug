@@ -10,22 +10,22 @@
 #include <iostream>
 #include <functional>
 #include "helper.h"
-#include "image_publisher.h"
+#include "sensor_publisher.h"
 #include "topic_names.h"
 
-#define NAME "image_node"
+#define NAME "sensor_node"
 
-std::pair<std::string, image_publisher*> createImageProcess(std::string subscribe){
-	image_publisher* process = new image_publisher(subscribe);
-	return std::pair<std::string, image_publisher*>(subscribe, process);
+std::pair<std::string, image_publisher*> createSensorProcess(std::string subscribe){
+	image_publisher* process = new sensor_publisher(subscribe);
+	return std::pair<std::string, sensor_publisher*>(subscribe, process);
 }
 
 void threadUpdateTopics(){
 
 	ROS_INFO_NAMED(NAME, "Starting Topic subscriber");
 	ros::NodeHandle nh;
-	std::map<std::string, image_publisher*> processing;
-	std::vector<std::string> topics = getTopicsOfType("ladybug/image");
+	std::map<std::string, sensor_publisher*> processing;
+	std::vector<std::string> topics = getTopicsOfType("ladybug/sensors");
 
 	while(nh.ok())
 	{
@@ -33,7 +33,7 @@ void threadUpdateTopics(){
 		{
 			 if (processing.find(it->data()) == processing.end()) {
 				//create new publisher
-				processing.insert(createImageProcess(it->data()));
+				processing.insert(createSensorProcess(it->data()));
 			}
 		}
 		sleep(2);
@@ -53,7 +53,7 @@ int main(int argc, char **argv){
 
   new boost::thread(threadUpdateTopics);
 
-  ros::MultiThreadedSpinner spinner(6);
+  ros::MultiThreadedSpinner spinner(1);
   spinner.spin();
 
 

@@ -9,6 +9,7 @@
 #include <iostream>
 #include "helper.h"
 #include <sensor_msgs/image_encodings.h>
+#include "topic_names.h"
 
 #define NAME "receiver"
 #define ZMQ_BUFFER_SIZE 20
@@ -27,6 +28,14 @@ int main(int argc, char **argv){
 
   std::map<std::string, ros::Publisher*> publisher_map;
   unsigned int sequence = 0;
+  std::string sensorTopic = getReceiverSensorMsgTopicName();
+  if (publisher_map.find(sensorTopic) == publisher_map.end()) {
+		//create new publisher
+		ros::Publisher* pub =  new ros::Publisher();
+		*pub = nh.advertise<ladybug::sensors>(sensorTopic, 5);
+		publisher_map.insert(std::pair<std::string, ros::Publisher*>(sensorTopic, pub));
+	}
+  ros::Publisher* sensor_raw_publisher = publisher_map.find(sensorTopic)->second;
 
   try{
       zmq::context_t context(1);
@@ -42,14 +51,8 @@ int main(int argc, char **argv){
 		message = socket_read(&socket);
 		ROS_INFO_STREAM_NAMED(NAME, "Received message id: " << message->id() << " with size: " << message->ByteSize()/1024 << " KiB and " << message->images_size() << " images");
 		/* Sensor messages */
-		std::string sensorTopic = getSensorTopic(message);
-		if (publisher_map.find(sensorTopic) == publisher_map.end()) {
-			//create new publisher
-			ros::Publisher* pub =  new ros::Publisher();
-			*pub = nh.advertise<ladybug::sensors>(sensorTopic, 5);
-			publisher_map.insert(std::pair<std::string, ros::Publisher*>(sensorTopic, pub));
-		}
-		ros::Publisher* sensorPublisher = publisher_map.find(sensorTopic)->second;
+
+
 		ladybug::sensors sensor_msg;
 		sensor_msg.header.frame_id = sensorTopic;
 		sensor_msg.header.seq = sequence;
@@ -73,7 +76,7 @@ int main(int argc, char **argv){
 
 		/* images */
 		for(int i = 0; i< message->images_size(); ++i){
-			std::string id = getImageIdColorSep(message, i);
+			std::string id = getReceiverImageMsgTopicName(i);
 			if (publisher_map.find(id) == publisher_map.end()) {
 				//create new publisher
 				ros::Publisher* pub =  new ros::Publisher();
@@ -131,7 +134,7 @@ int main(int argc, char **argv){
 				pub->publish(msg);
 			}
 		}
-		sensorPublisher->publish(sensor_msg);
+		sensor_raw_publisher->publish(sensor_msg);
 
 		message->Clear();
 		delete message;

@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   sensor_msgs
   genmsg
+  tf
 )
 
 
@@ -117,8 +118,9 @@ include_directories(
 #Image processing node
 add_executable(image_node 
                 src/image_node/image_node.cpp 
-                src/common/colorSepToImage.cpp 
+                src/common/image_publisher.cpp 
                 src/common/opencv_helper.cpp
+                src/common/topic_names.cpp
                 )
 target_link_libraries(image_node 
                 ${catkin_LIBRARIES}
@@ -133,6 +135,7 @@ add_executable(receiver
                 src/common/socket.cpp 
                 src/common/helper.cpp 
                 src/common/protobuf/imageMessage.pb.cc
+                src/common/topic_names.cpp
                 )
 target_link_libraries(receiver 
                 ${catkin_LIBRARIES} 
