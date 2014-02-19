@@ -17,7 +17,7 @@ class colorSepToImage {
 public:
 	colorSepToImage(std::string subscribe_topic, std::string publish_topic);
 	virtual ~colorSepToImage();
-	void callback(const ladybug::image_colorsep& input);
+	void callback(const ladybug::image &input);
 private:
   ros::NodeHandle n_;
   ros::Subscriber sub_;

@@ -13,6 +13,7 @@
 
 std::string getImageId(ladybug5_network::pbMessage* message, int i);
 std::string getImageIdColorSep(ladybug5_network::pbMessage* message, int i);
+std::string getSensorTopic(ladybug5_network::pbMessage* message);
 std::string getCompressedMessageTopic(ladybug5_network::pbMessage* message);
 std::string make_daytime_string();
 

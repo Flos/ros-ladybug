@@ -53,7 +53,8 @@ find_package(Boost REQUIRED COMPONENTS system)
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES 
-  image_colorsep.msg
+  image.msg
+  sensors.msg
 )
 
 ## Generate services in the 'srv' folder

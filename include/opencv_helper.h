@@ -21,9 +21,9 @@
 #include "protobuf/imageMessage.pb.h"
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/io/zero_copy_stream_impl.h"
-#include "ladybug/image_colorsep.h"
+#include "ladybug/image.h"
 
 void rotate(cv::Mat& src, double angle, cv::Mat& dst);
-const sensor_msgs::ImagePtr createImgPtr(const ladybug::image_colorsep* message);
+const sensor_msgs::ImagePtr createImgPtr(const ladybug::image* message);
 
 #endif /* OPENCV_HELPER_H_ */

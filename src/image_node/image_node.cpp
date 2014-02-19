@@ -1,5 +1,5 @@
 #include "ros/ros.h"
-#include "ladybug/image_colorsep.h"
+#include "ladybug/image.h"
 #include <sstream>
 #include <image_transport/image_transport.h>
 #include "opencv_helper.h"
@@ -20,7 +20,7 @@ void getTopicName(int cameraNr, std::string &topic_in, std::string &topic_out){
 	std::stringstream topic;
 	topic << "/windows/ladybug5/LADYBUG_RAW_CAM" << cameraNr;
 	topic_out = topic.str();
-	topic << "/jpg_color_sep";
+	topic << "/ladybug_image";
 	topic_in = topic.str();
 }
 
@@ -29,7 +29,7 @@ std::pair<std::string, colorSepToImage*> createImageProcess(int camera){
 	std::string out;
 	getTopicName(camera, in, out);
 
-	colorSepToImage* process = new colorSepToImage(in, out);
+	colorSepToImage* process = new colorSepToImage(in, out+"/image");
 	return std::pair<std::string, colorSepToImage*>(in,process);
 }
 
@@ -43,6 +43,9 @@ int main(int argc, char **argv){
   for(unsigned int i = 0; i < 6; ++i){
 	processing.insert(createImageProcess(i));
   }
+
+  colorSepToImage* process = new colorSepToImage("/windows/ladybug5/LADYBUG_PANORAMIC/ladybug_image","/windows/ladybug5/LADYBUG_PANORAMIC/image");
+  processing.insert(std::pair<std::string, colorSepToImage*>("/windows/ladybug5/LADYBUG_PANORAMIC/ladybug_image",process));
 
   ros::MultiThreadedSpinner spinner(6);
   spinner.spin();

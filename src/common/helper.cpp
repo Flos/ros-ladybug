@@ -11,8 +11,12 @@ std::string getImageId(ladybug5_network::pbMessage* message, int i){
 	return  "/" + message->name() + "/" + message->camera()	+ "/" + message->images(i).name();
 }
 
+std::string getSensorTopic(ladybug5_network::pbMessage* message){
+	return  "/" + message->name() + "/" + message->camera()	+ "/sensors" ;
+}
+
 std::string getImageIdColorSep(ladybug5_network::pbMessage* message, int i){
-	return  getImageId(message, i) + "/" + "jpg_color_sep";
+	return  getImageId(message, i) + "/" + "ladybug_image";
 }
 
 std::string getCompressedMessageTopic(ladybug5_network::pbMessage* message){

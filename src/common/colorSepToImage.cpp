@@ -26,7 +26,7 @@ colorSepToImage::~colorSepToImage() {
 }
 
 void
-colorSepToImage::callback(const ladybug::image_colorsep &input)
+colorSepToImage::callback(const ladybug::image &input)
 {
 	pub_.publish(createImgPtr(&input));
 }
