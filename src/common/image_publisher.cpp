@@ -28,11 +28,14 @@ image_publisher::callback(const ladybug::image &input)
 		//Topic you want to publish
 		it_ = new image_transport::ImageTransport(n_);
 		pub_ = it_->advertise(getTopicName(input.camera_number), 4);
-		transform.setOrigin( tf::Vector3(input.translation[0], input.translation[1], input.translation[2]) );
-	    transform.setRotation( tf::Quaternion(input.rotation[0], input.rotation[1], input.rotation[2]) );
+		tf::Quaternion quat;
+		quat.setEulerZYX(input.rotationZ, input.rotationY, input.rotationX);
+		//quat.se
+		transform.setOrigin( tf::Vector3(input.translationX, input.translationY, input.translationZ) );
+		transform.setRotation(quat);
 	    camera_ = getCameraName(input.camera_number);
 	}
-	br.sendTransform(tf::StampedTransform(transform, input.header.stamp, "ladybug_link", camera_ ));
+	br.sendTransform(tf::StampedTransform(transform, input.header.stamp, "ladybug_link", camera_));
 	pub_.publish(createImgPtr(&input));
 }
 

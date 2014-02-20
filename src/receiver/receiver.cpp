@@ -102,12 +102,12 @@ int main(int argc, char **argv){
 				msg.focalY = message->images(i).distortion().focaly();
 				msg.centerX = message->images(i).distortion().centerx();
 				msg.centerY = message->images(i).distortion().centery();
-				msg.translation[0] = message->images(i).position().tx();
-				msg.translation[1] = message->images(i).position().ty();
-				msg.translation[2] = message->images(i).position().tz();
-				msg.rotation[0] = message->images(i).position().rx();
-				msg.rotation[1] = message->images(i).position().ry();
-				msg.rotation[2] = message->images(i).position().rz();
+				msg.translationX = message->images(i).position().tx();
+				msg.translationY = message->images(i).position().ty();
+				msg.translationZ = message->images(i).position().tz();
+				msg.rotationX = message->images(i).position().rx();
+				msg.rotationY = message->images(i).position().ry();
+				msg.rotationZ = message->images(i).position().rz();
 
 				switch(message->images(i).packages()){
 					case 1:{
