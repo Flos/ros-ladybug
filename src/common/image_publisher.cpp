@@ -34,7 +34,7 @@ image_publisher::callback(const ladybug::image &input)
 		transform.setRotation(quat);
 	    camera_ = getCameraName(input.camera_number);
 	}
-	br.sendTransform(tf::StampedTransform(transform, input.header.stamp, "ladybug_link", camera_));
+	br.sendTransform(tf::StampedTransform(transform, input.header.stamp, "ladybug_link", input.header.frame_id));
 	pub_.publish(createImgPtr(&input));
 }
 
