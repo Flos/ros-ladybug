@@ -39,10 +39,10 @@ getNodeList()
 {
   std::vector<std::string> all_nodes;
   ros::master::getNodes(all_nodes);
-  for (std::vector<std::string>::const_iterator it = all_nodes.begin(); it != all_nodes.end(); it++)
-  {
-	  std::cout << it->data() << std::endl;
-  }
+//  for (std::vector<std::string>::const_iterator it = all_nodes.begin(); it != all_nodes.end(); it++)
+//  {
+//	  std::cout << it->data() << std::endl;
+//  }
   return all_nodes;
 }
 
@@ -55,7 +55,7 @@ getTopicsOfType(std::string datatype)
   std::vector<std::string> all_topics;
   for (ros::master::V_TopicInfo::const_iterator it = topic_info.begin(); it != topic_info.end(); it++)
   {
-	  std::cout << it->name.c_str() << " datatype: " << it->datatype << " " << std::endl;
+	  //std::cout << it->name.c_str() << " datatype: " << it->datatype << " " << std::endl;
 	  if(it->datatype.compare(datatype) == 0){
 		  all_topics.push_back(it->name);
 	  }

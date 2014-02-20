@@ -25,10 +25,10 @@ void threadUpdateTopics(){
 	ROS_INFO_NAMED(NAME, "Starting Topic subscriber");
 	ros::NodeHandle nh;
 	std::map<std::string, sensor_publisher*> processing;
-	std::vector<std::string> topics = getTopicsOfType("ladybug/sensors");
 
 	while(nh.ok())
 	{
+		std::vector<std::string> topics = getTopicsOfType("ladybug/sensors");
 		for (std::vector<std::string>::const_iterator it = topics.begin(); it != topics.end(); it++)
 		{
 			 if (processing.find(it->data()) == processing.end()) {
