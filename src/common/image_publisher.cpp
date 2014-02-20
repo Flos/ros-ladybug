@@ -29,8 +29,7 @@ image_publisher::callback(const ladybug::image &input)
 		it_ = new image_transport::ImageTransport(n_);
 		pub_ = it_->advertise(getTopicName(input.camera_number), 4);
 		tf::Quaternion quat;
-		quat.setEulerZYX(input.rotationZ, input.rotationY, input.rotationX);
-		//quat.se
+		quat.setRPY(input.rotationX, input.rotationY, input.rotationZ);
 		transform.setOrigin( tf::Vector3(input.translationX, input.translationY, input.translationZ) );
 		transform.setRotation(quat);
 	    camera_ = getCameraName(input.camera_number);
