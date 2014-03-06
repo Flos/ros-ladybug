@@ -12,6 +12,10 @@ uint8[] r
 uint8[] g
 uint8[] b
 uint8[] raw
+uint32 border_top
+uint32 border_bottem
+uint32 border_left
+uint32 border_right
 float64 focalX
 float64 focalY
 float64 centerX
