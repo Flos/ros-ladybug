@@ -145,6 +145,35 @@ target_link_libraries(receiver
                 
 add_dependencies(receiver ladybug_generate_messages_cpp)
 
+#Image Sensor node
+add_executable(sensor_node 
+                src/sensor_node/sensor_node.cpp 
+                src/common/sensor_publisher.cpp
+                src/common/topic_names.cpp
+                )
+target_link_libraries(sensor_node 
+                ${catkin_LIBRARIES}
+                )
+add_dependencies(sensor_node 
+                ladybug_generate_messages_cpp
+                )
+                
+#Image rectification node
+add_executable(rectification_map_node 
+                src/rectification_map/rectification_map.cpp
+                src/common/topic_names.cpp
+                src/common/image_rectified_publisher.cpp 
+                src/common/opencv_helper.cpp
+                )
+                
+target_link_libraries(rectification_map_node 
+                ${catkin_LIBRARIES}
+                )
+                
+add_dependencies(rectification_map_node 
+                ladybug_generate_messages_cpp
+                )
+
 ## Declare a cpp executable
 # add_executable(ladybug_node src/ladybug_node.cpp)
 
