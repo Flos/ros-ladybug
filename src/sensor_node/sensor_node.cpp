@@ -15,8 +15,8 @@
 
 #define NAME "sensor_node"
 
-std::pair<std::string, image_publisher*> createSensorProcess(std::string subscribe){
-	image_publisher* process = new sensor_publisher(subscribe);
+std::pair<std::string, sensor_publisher*> createSensorProcess(std::string subscribe){
+	sensor_publisher* process = new sensor_publisher(subscribe);
 	return std::pair<std::string, sensor_publisher*>(subscribe, process);
 }
 
