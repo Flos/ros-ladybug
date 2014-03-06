@@ -25,5 +25,8 @@
 
 void rotate(cv::Mat& src, double angle, cv::Mat& dst);
 const sensor_msgs::ImagePtr createImgPtr(const ladybug::image* message);
+const sensor_msgs::ImagePtr rectifyImage(const cv_bridge::CvImagePtr &cv_ptr, cv::Mat &map_x, cv::Mat &map_y );
+void loadMat(cv::Mat &mat, std::string filename);
+void saveMat(cv::Mat &mat, std::string filename);
 
 #endif /* OPENCV_HELPER_H_ */
