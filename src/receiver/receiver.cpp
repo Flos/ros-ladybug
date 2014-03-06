@@ -109,6 +109,11 @@ int main(int argc, char **argv){
 				msg.rotationY = message->images(i).position().ry();
 				msg.rotationZ = message->images(i).position().rz();
 
+				msg.border_top = message->images(i).border_top();
+				msg.border_bottem = message->images(i).border_bottem();
+				msg.border_left = message->images(i).border_left();
+				msg.border_right = message->images(i).border_right();
+
 				switch(message->images(i).packages()){
 					case 1:{
 						zmq::message_t rgb;
