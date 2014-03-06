@@ -19,13 +19,20 @@ std::string
 getReceiverImageMsgTopicName(int cameraNr);
 
 std::string
+getTopicName();
+
+std::string
 getTopicName(int cameraNr);
+
+std::string
+getTopicNameRawImage(int cameraNr);
 
 std::string
 getCameraName(int cameraNr);
 
 std::vector<std::string>
-getTopicsOfType(std::string datatype);
+getTopicsOfType(std::string datatype, std::string filter1="", std::string endsWith="");
+
 
 std::vector<std::string>
 getNodeList();
