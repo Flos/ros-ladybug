@@ -12,7 +12,7 @@ image_publisher::image_publisher(std::string subscribe_topic) {
 	subscribe_topic_ = subscribe_topic;
 
 	ROS_INFO_STREAM("Creating processing node for topic" << subscribe_topic.c_str());
-	sub_ = n_.subscribe(subscribe_topic.c_str(), 4, &image_publisher::callback, this);
+	sub_ = n_.subscribe(subscribe_topic.c_str(), 1, &image_publisher::callback, this);
 	it_ = NULL;
 }
 
@@ -25,16 +25,32 @@ void
 image_publisher::callback(const ladybug::image &input)
 {
 	if(it_ == NULL){
-		//Topic you want to publish
+		// Create image transport
 		it_ = new image_transport::ImageTransport(n_);
-		pub_ = it_->advertise(getTopicName(input.camera_number), 4);
+		pub_ = it_->advertise(getTopicNameRawImage(input.camera_number), 1);
+
+		// Create Transform
 		tf::Quaternion quat;
 		quat.setRPY(input.rotationX, input.rotationY, input.rotationZ);
 		transform.setOrigin( tf::Vector3(input.translationX, input.translationY, input.translationZ) );
 		transform.setRotation(quat);
-	    camera_ = getCameraName(input.camera_number);
+
+		// Create CameraInfo
+		cam_info_msg.header = input.header;
+		cam_info_msg.width = input.width;
+		cam_info_msg.height = input.height;
+		cam_info_msg.distortion_model = sensor_msgs::distortion_models::PLUMB_BOB;
+		//cam_info_msg.D[0] =
+		cam_info_msg.K[0] = input.focalX;
+		cam_info_msg.K[2] = input.centerX;
+		cam_info_msg.K[4] = input.focalY;
+		cam_info_msg.K[5] = input.centerY;
+		cam_info_msg.K[8] = 1;
+	    pub_info_ = n_.advertise<sensor_msgs::CameraInfo>(getTopicName(input.camera_number)+"/camera_info", 1);
 	}
 	br.sendTransform(tf::StampedTransform(transform, input.header.stamp, "ladybug_link", input.header.frame_id));
+	cam_info_msg.header.stamp = input.header.stamp;
+	pub_info_.publish(cam_info_msg);
 	pub_.publish(createImgPtr(&input));
 }
 

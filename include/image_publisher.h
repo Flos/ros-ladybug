@@ -14,6 +14,7 @@
 #include <boost/thread.hpp>
 #include "topic_names.h"
 #include <tf/transform_broadcaster.h>
+#include "sensor_msgs/distortion_models.h"
 
 class image_publisher {
 public:
@@ -25,11 +26,13 @@ private:
   ros::Subscriber sub_;
   image_transport::ImageTransport *it_;
   image_transport::Publisher pub_;
+  ros::Publisher pub_info_;
   tf::TransformBroadcaster br;
   tf::Transform transform;
   std::string subscribe_topic_;
   std::string publish_topic_;
   std::string camera_;
+  sensor_msgs::CameraInfo cam_info_msg;
 };
 
 #endif /* image_publisher_H_ */
