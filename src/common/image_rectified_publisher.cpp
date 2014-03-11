@@ -13,10 +13,9 @@ image_rectified_publisher::image_rectified_publisher(std::string subscribe_topic
 	subscribe_topic_ = subscribe_topic;
 	publish_topic_ = subscribe_topic + "/rectified";
 
-	unsigned long int pos = subscribe_topic.rfind('/');
-	std::string baseTopic = subscribe_topic.substr(0, pos); //"
+	std::string baseTopic = getSubTopic(subscribe_topic);
 
-	pos = baseTopic.rfind('/');
+	unsigned int pos = baseTopic.rfind('/');
 	++pos; // set position after '/'
 	std::string camera = baseTopic.substr(pos,baseTopic.size()-pos);
 	std::string basePath = "/home/fnolden/src/catkin_ws/src/ladybug/src/rectification_map/calibration/13122828_";

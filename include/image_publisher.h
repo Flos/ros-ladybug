@@ -10,6 +10,7 @@
 #include "ros/ros.h"
 #include "ladybug/image.h"
 #include "image_transport/image_transport.h"
+#include "camera_info_manager/camera_info_manager.h"
 #include "opencv_helper.h"
 #include <boost/thread.hpp>
 #include "topic_names.h"
@@ -33,6 +34,7 @@ private:
   std::string publish_topic_;
   std::string camera_;
   sensor_msgs::CameraInfo cam_info_msg;
+  camera_info_manager::CameraInfoManager *camera_service;
 };
 
 #endif /* image_publisher_H_ */

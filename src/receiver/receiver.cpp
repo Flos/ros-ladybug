@@ -87,7 +87,7 @@ int main(int argc, char **argv){
 
 			if( message->images(i).has_packages()){ /* packages send also */
 				ladybug::image msg;
-				msg.header.frame_id = id;
+				msg.header.frame_id = getSubTopic(id);
 				msg.header.seq = sequence;
 				msg.serial_number = message->serial_number();
 				msg.width = message->images(i).width();

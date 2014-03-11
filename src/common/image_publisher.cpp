@@ -8,17 +8,21 @@
 #include "image_publisher.h"
 
 image_publisher::image_publisher(std::string subscribe_topic) {
-	//Topic you want to subscribe
 	subscribe_topic_ = subscribe_topic;
+	publish_topic_ = getSubTopic(subscribe_topic_)+"/image";
 
-	ROS_INFO_STREAM("Creating processing node for topic" << subscribe_topic.c_str());
+	ROS_INFO("Creating node for topic %s -> %s ",subscribe_topic.c_str(),publish_topic_.c_str());
+	n_ = ros::NodeHandle(getSubTopic(subscribe_topic_));
+
 	sub_ = n_.subscribe(subscribe_topic.c_str(), 1, &image_publisher::callback, this);
 	it_ = NULL;
+	camera_service = NULL;
 }
 
 image_publisher::~image_publisher() {
 	ROS_INFO_STREAM("closing node for topic" << subscribe_topic_);
 	delete it_;
+	delete camera_service;
 }
 
 void
@@ -26,8 +30,15 @@ image_publisher::callback(const ladybug::image &input)
 {
 	if(it_ == NULL){
 		// Create image transport
+
+
+		char name[255];
+		std::sprintf(name,"ladybug_%s_camera%d", input.serial_number.c_str(), input.camera_number);
 		it_ = new image_transport::ImageTransport(n_);
-		pub_ = it_->advertise(getTopicNameRawImage(input.camera_number), 1);
+		camera_service = new camera_info_manager::CameraInfoManager(n_, name);
+
+		pub_ = it_->advertise(publish_topic_, 1);
+
 
 		// Create Transform
 		tf::Quaternion quat;
@@ -46,11 +57,11 @@ image_publisher::callback(const ladybug::image &input)
 		cam_info_msg.K[4] = input.focalY;
 		cam_info_msg.K[5] = input.centerY;
 		cam_info_msg.K[8] = 1;
-	    pub_info_ = n_.advertise<sensor_msgs::CameraInfo>(getTopicName(input.camera_number)+"/camera_info", 1);
+	    //pub_info_ = n_.advertise<sensor_msgs::CameraInfo>(getTopicName(input.camera_number)+"/camera_info", 1);
 	}
 	br.sendTransform(tf::StampedTransform(transform, input.header.stamp, "ladybug_link", input.header.frame_id));
 	cam_info_msg.header.stamp = input.header.stamp;
-	pub_info_.publish(cam_info_msg);
+	//pub_info_.publish(cam_info_msg);
 	pub_.publish(createImgPtr(&input));
 }
 
