@@ -11,7 +11,7 @@ image_rectified_publisher::image_rectified_publisher(std::string subscribe_topic
 	//Topic to subscribe
 	ROS_INFO("image_rectified_publisher created");
 	subscribe_topic_ = subscribe_topic;
-	publish_topic_ = subscribe_topic + "/rectified";
+	publish_topic_ = getSubTopic(subscribe_topic) + "/image_rect_color";
 
 	std::string baseTopic = getSubTopic(subscribe_topic);
 
@@ -58,7 +58,8 @@ image_rectified_publisher::callback(const sensor_msgs::ImageConstPtr &message)
 		ROS_WARN("Resizeing image: map is bigger than image");
 		ROS_WARN("image: %d %d %d depth %d map: %d %d %d depth %d",cv_ptr->image.cols, cv_ptr->image.rows, cv_ptr->image.dims, cv_ptr->image.depth(), map_x.cols, map_x.rows, map_x.dims, map_x.depth());
 		cv::resize(cv_ptr->image, cv_ptr->image, img_size);
-		//cv::resize(map_y, map_y, img_size);
+		//cv::resize(map_y, map_y, img_size, 0, 0, cv::INTER_CUBIC);
+		//cv::resize(map_x, map_x, img_size, 0, 0, cv::INTER_CUBIC);
 	}
 //	else if( cv_ptr->image.cols >  map_x.cols /* image is bigger than map, reload map */
 //			|| cv_ptr->image.rows > map_x.rows ){
