@@ -22,6 +22,9 @@ std::string
 getTopicName();
 
 std::string
+getRawImageName();
+
+std::string
 getTopicName(int cameraNr);
 
 std::string

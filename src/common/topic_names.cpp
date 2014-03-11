@@ -12,6 +12,11 @@ getTopicName(){
 }
 
 std::string
+getRawImageName(){
+	return "/image_raw";
+}
+
+std::string
 getReceiverSensorMsgTopicName(){
 	return getTopicName()+"/sensor/rec";
 }
@@ -34,7 +39,7 @@ getTopicName(int cameraNr){
 
 std::string
 getTopicNameRawImage(int cameraNr){
-	return getTopicName(cameraNr)+"/image";
+	return getTopicName(cameraNr)+getRawImageName();
 }
 
 std::string
