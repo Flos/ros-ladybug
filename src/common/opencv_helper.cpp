@@ -1,4 +1,5 @@
 #include "opencv_helper.h"
+#include <fstream>
 
 /**
  * Rotate an image
@@ -20,13 +21,20 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 
 	if(!message->raw.empty())
 	{
-		out_msg.image = cv::imdecode(message->raw, CV_LOAD_IMAGE_COLOR).adjustROI(message->border_top, message->border_bottem, message->border_left, message->border_right);
+		image = cv::imdecode(message->raw, CV_LOAD_IMAGE_COLOR);
+		cv::Rect border(message->border_left, message->border_top, image.cols - message->border_right - message->border_left, image.rows - message->border_bottem - message->border_top);
+		out_msg.image = image(border);
 		out_msg.encoding = sensor_msgs::image_encodings::RGB8;
 	}else{
 		cv::Mat r,g,b;
-		r = cv::imdecode(message->r, CV_LOAD_IMAGE_GRAYSCALE).adjustROI(message->border_top, message->border_bottem, message->border_left, message->border_right);
-		g = cv::imdecode(message->g, CV_LOAD_IMAGE_GRAYSCALE).adjustROI(message->border_top, message->border_bottem, message->border_left, message->border_right);
-		b = cv::imdecode(message->b, CV_LOAD_IMAGE_GRAYSCALE).adjustROI(message->border_top, message->border_bottem, message->border_left, message->border_right);
+		r = cv::imdecode(message->r, CV_LOAD_IMAGE_GRAYSCALE);
+		cv::Rect border(message->border_left, message->border_top, r.cols - message->border_right - message->border_left, r.rows - message->border_bottem - message->border_top);
+
+		r = r(border);
+		g = cv::imdecode(message->g, CV_LOAD_IMAGE_GRAYSCALE);
+		g = g(border);
+		b = cv::imdecode(message->b, CV_LOAD_IMAGE_GRAYSCALE);
+		b = b(border);
 
 		std::vector<cv::Mat> channels;
 
@@ -41,11 +49,10 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 		channels.clear();
 		out_msg.encoding = sensor_msgs::image_encodings::RGB8;
 		out_msg.image = image; //image;
+		std::cout << "image: rows " << image.rows << "cols " << image.cols << std::endl;
 		image.release();
 	}
 	//rotate(image, -90, image);
-
-
 	return out_msg.toImageMsg();
 }
 
