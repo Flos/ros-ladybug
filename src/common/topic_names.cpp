@@ -8,19 +8,23 @@
 
 std::string
 getTopicName(){
-	return "/windows/ladybug5";
+	return "/ladybug5";
 }
 
 std::string
 getReceiverSensorMsgTopicName(){
-	return getTopicName()+"/record/ladybug_sensor";
+	return getTopicName()+"/sensor/rec";
 }
 
 std::string
 getReceiverImageMsgTopicName(int cameraNr){
-	std::stringstream topic;
-	topic << getTopicName()+"/record/ladybug_image" << cameraNr;
-	return topic.str();
+	return getTopicName() + getCameraName(cameraNr) + "/rec";
+}
+
+std::string
+getSubTopic(std::string topic){
+	unsigned long int pos = topic.rfind('/'); // find the last "/"
+	return topic.substr(0, pos);
 }
 
 std::string

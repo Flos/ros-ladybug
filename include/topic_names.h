@@ -30,6 +30,9 @@ getTopicNameRawImage(int cameraNr);
 std::string
 getCameraName(int cameraNr);
 
+std::string
+getSubTopic(std::string topic);
+
 std::vector<std::string>
 getTopicsOfType(std::string datatype, std::string filter1="", std::string endsWith="");
 
