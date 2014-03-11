@@ -1,0 +1,3 @@
+<launch>
+    <node name="receiver"             pkg="ladybug" type="receiver"/>
+</launch>
