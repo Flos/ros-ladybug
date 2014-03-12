@@ -49,7 +49,6 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 		channels.clear();
 		out_msg.encoding = sensor_msgs::image_encodings::RGB8;
 		out_msg.image = image; //image;
-		std::cout << "image: rows " << image.rows << "cols " << image.cols << std::endl;
 		image.release();
 	}
 	//rotate(image, -90, image);
