@@ -17,23 +17,15 @@ image_rectified_publisher::image_rectified_publisher(std::string subscribe_topic
 
 	unsigned int pos = baseTopic.rfind('/');
 	++pos; // set position after '/'
-	std::string camera = baseTopic.substr(pos,baseTopic.size()-pos);
-	std::string basePath = "/home/fnolden/src/catkin_ws/src/ladybug/src/rectification_map/calibration/13122828_";
-
-	filename_map_x = basePath + camera +"_map_x.yaml";
-	filename_map_y = basePath + camera +"_map_y.yaml";
-	ROS_INFO("Subscribing\t%s", subscribe_topic.c_str());
-	ROS_INFO("Publishing \t%s", publish_topic_.c_str());
-	ROS_INFO("Loading rectification map x: %s",filename_map_x.c_str());
-	loadMat(map_x, filename_map_x);
-	ROS_INFO("map x: %s Dims: %d %d %d depth %d",filename_map_x.c_str(), map_x.cols, map_x.rows, map_x.dims, map_x.depth());
-
-	ROS_INFO("Loading rectification map y: %s",filename_map_y.c_str());
-	loadMat(map_y, filename_map_y);
-	ROS_INFO("map y: %s Dims: %d %d %d depth %d",filename_map_y.c_str(), map_y.cols, map_y.rows, map_y.dims, map_y.depth());
+	camera_ = baseTopic.substr(pos,baseTopic.size()-pos);
+	n_.param<std::string>("calibration_path", basePath_ , "/home/fnolden/src/catkin_ws/src/ladybug/src/rectification_map/calibration/13122828_");
 
 	sub_ = n_.subscribe(subscribe_topic.c_str(), 1, &image_rectified_publisher::callback, this);
 	it_ = NULL;
+
+	ROS_INFO("Subscribing\t%s", subscribe_topic.c_str());
+	ROS_INFO("Publishing \t%s", publish_topic_.c_str());
+	ROS_INFO("Calibration file Path: \t%s", basePath_.c_str());
 }
 
 image_rectified_publisher::~image_rectified_publisher() {
@@ -42,14 +34,35 @@ image_rectified_publisher::~image_rectified_publisher() {
 }
 
 void
+image_rectified_publisher::load_maps(int w, int h){
+	char filename_x[255];
+	char filename_y[255];
+	sprintf(filename_x,"%s%s_h%d_w%d%s",basePath_.c_str(), camera_.c_str(), h, w, "_map_x.yaml");
+	sprintf(filename_y,"%s%s_h%d_w%d%s",basePath_.c_str(), camera_.c_str(), h, w, "_map_y.yaml");
+
+	filename_map_x_ = filename_x;
+	filename_map_y_ = filename_y;
+
+	ROS_INFO("Loading rectification map x: %s",filename_map_x_.c_str());
+	loadMat(map_x, filename_map_x_);
+	ROS_INFO("map x: %s Dims: %d %d %d depth %d",filename_map_x_.c_str(), map_x.cols, map_x.rows, map_x.dims, map_x.depth());
+
+	ROS_INFO("Loading rectification map y: %s",filename_map_y_.c_str());
+	loadMat(map_y, filename_map_y_);
+	ROS_INFO("map y: %s Dims: %d %d %d depth %d",filename_map_y_.c_str(), map_y.cols, map_y.rows, map_y.dims, map_y.depth());
+
+}
+
+void
 image_rectified_publisher::callback(const sensor_msgs::ImageConstPtr &message)
 {
+	cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);
 	if(it_ == NULL){
 		// Create image transport
 		it_ = new image_transport::ImageTransport(n_);
 		pub_ = it_->advertise(publish_topic_, 1);
+		load_maps(cv_ptr->image.cols,cv_ptr->image.rows);
 	}
-	cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);
 	if(cv_ptr->image.cols < map_x.cols /* image is smaller than map, resize map */
 			|| cv_ptr->image.rows < map_x.rows ){
 
@@ -69,6 +82,8 @@ image_rectified_publisher::callback(const sensor_msgs::ImageConstPtr &message)
 //		loadMat(map_x, filename_map_x);
 //		loadMat(map_y, filename_map_y);
 //	}
-	pub_.publish(rectifyImage(cv_ptr, map_x, map_y));
+	if(pub_.getNumSubscribers()>0){
+		pub_.publish(rectifyImage(cv_ptr, map_x, map_y));
+	}
 }
 
