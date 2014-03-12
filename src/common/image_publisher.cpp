@@ -62,6 +62,9 @@ image_publisher::callback(const ladybug::image &input)
 	sensor_msgs::CameraInfo caminfo = camera_service->getCameraInfo();
 	caminfo.header = input.header;
 	pub_info_.publish(caminfo);
-	pub_.publish(createImgPtr(&input));
+
+	if(pub_.getNumSubscribers()>0){
+		pub_.publish(createImgPtr(&input));
+	}
 }
 
