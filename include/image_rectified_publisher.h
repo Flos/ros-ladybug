@@ -28,10 +28,12 @@ private:
   std::string subscribe_topic_;
   std::string publish_topic_;
   std::string camera_;
-  std::string filename_map_x;
-  std::string filename_map_y;
+  std::string filename_map_x_;
+  std::string filename_map_y_;
+  std::string basePath_;
   cv::Mat map_x;
   cv::Mat map_y;
+  void load_maps(int h, int w);
 };
 
 #endif /* image_rectified_publisher_H_ */
