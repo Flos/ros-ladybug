@@ -1,0 +1,3 @@
+[submodule "src/common/protobuf"]
+	path = src/common/protobuf
+	url = https://github.com/Flos/ladybug_network-protobuf.git
