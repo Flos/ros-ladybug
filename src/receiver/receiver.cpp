@@ -76,18 +76,10 @@ int main(int argc, char **argv){
 
 		/* images */
 		for(int i = 0; i< message->images_size(); ++i){
-			std::string id = getReceiverImageMsgTopicName(i);
-			if (publisher_map.find(id) == publisher_map.end()) {
-				//create new publisher
-				ros::Publisher* pub =  new ros::Publisher();
-				*pub = nh.advertise<ladybug::image>(id, 5);
-				publisher_map.insert(std::pair<std::string, ros::Publisher*>(id, pub));
-			}
-			ros::Publisher* pub = publisher_map.find(id)->second;
 
 			if( message->images(i).has_packages()){ /* packages send also */
 				ladybug::image msg;
-				msg.header.frame_id = getSubTopic(id);
+
 				msg.header.seq = sequence;
 				msg.serial_number = message->serial_number();
 				msg.width = message->images(i).width();
@@ -136,6 +128,15 @@ int main(int argc, char **argv){
 					default:
 						break;
 				}
+				std::string id = getReceiverImageMsgTopicName(message->images(i).type());
+				msg.header.frame_id = getSubTopic(id);
+				if (publisher_map.find(id) == publisher_map.end()) {
+					//create new publisher
+					ros::Publisher* pub =  new ros::Publisher();
+					*pub = nh.advertise<ladybug::image>(id, 5);
+					publisher_map.insert(std::pair<std::string, ros::Publisher*>(id, pub));
+				}
+				ros::Publisher* pub = publisher_map.find(id)->second;
 				pub->publish(msg);
 			}
 		}

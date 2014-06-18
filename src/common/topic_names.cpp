@@ -22,8 +22,8 @@ getReceiverSensorMsgTopicName(){
 }
 
 std::string
-getReceiverImageMsgTopicName(int cameraNr){
-	return getTopicName() + getCameraName(cameraNr) + "/rec";
+getReceiverImageMsgTopicName(int type){
+	return getTopicName() + getCameraName(type) + "/rec";
 }
 
 std::string
@@ -33,19 +33,49 @@ getSubTopic(std::string topic){
 }
 
 std::string
-getTopicName(int cameraNr){
-	return getTopicName() + getCameraName(cameraNr);
+getTopicName(int type){
+	return getTopicName() + getCameraName(type);
 }
 
 std::string
-getTopicNameRawImage(int cameraNr){
-	return getTopicName(cameraNr)+getRawImageName();
+getTopicNameRawImage(int type){
+	return getTopicName(type)+getRawImageName();
 }
 
 std::string
-getCameraName(int cameraNr){
+getCameraName(int type){
 	std::stringstream topic;
-	topic << "/camera" << cameraNr;
+	switch (type){
+		case ladybug5_network::LADYBUG_RAW_CAM0:
+			topic << "/camera0";
+			break;
+		case ladybug5_network::LADYBUG_RAW_CAM1:
+			topic << "/camera1";
+			break;
+		case ladybug5_network::LADYBUG_RAW_CAM2:
+			topic << "/camera2";
+			break;
+		case ladybug5_network::LADYBUG_RAW_CAM3:
+			topic << "/camera3";
+			break;
+		case ladybug5_network::LADYBUG_RAW_CAM4:
+			topic << "/camera4";
+			break;
+		case ladybug5_network::LADYBUG_RAW_CAM5:
+			topic << "/camera5";
+			break;
+		case ladybug5_network::LADYBUG_PANORAMIC:
+			topic << "/panoramic";
+			break;
+		case ladybug5_network::LADYBUG_SPHERICAL:
+			topic << "/spherical";
+			break;
+		case ladybug5_network::LADYBUG_DOME:
+			topic << "/dome";
+			break;
+		default:
+			topic << "/camera_type_" << type;
+		}
 	return topic.str();
 }
 

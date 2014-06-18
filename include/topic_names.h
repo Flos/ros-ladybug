@@ -11,6 +11,7 @@
 #include <sstream>
 #include <ros/ros.h>
 #include <ros/master.h>
+#include "protobuf/imageMessage.pb.h"
 
 std::string
 getReceiverSensorMsgTopicName();
@@ -25,13 +26,13 @@ std::string
 getRawImageName();
 
 std::string
-getTopicName(int cameraNr);
+getTopicName(int type);
 
 std::string
-getTopicNameRawImage(int cameraNr);
+getTopicNameRawImage(int type);
 
 std::string
-getCameraName(int cameraNr);
+getCameraName(int type);
 
 std::string
 getSubTopic(std::string topic);
