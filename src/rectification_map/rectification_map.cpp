@@ -28,7 +28,7 @@ void threadUpdateTopics(){
 
 	while(nh.ok())
 	{
-		topics = getTopicsOfType("sensor_msgs/Image", getTopicName(), getRawImageName());
+		topics = getTopicsOfType("sensor_msgs/Image", getTopicName() + "/camera", getRawImageName());
 		for (std::vector<std::string>::const_iterator it = topics.begin(); it != topics.end(); it++)
 		{
 			 if (processing.find(it->data()) == processing.end()) {
