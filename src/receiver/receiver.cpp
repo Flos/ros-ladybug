@@ -49,9 +49,8 @@ int main(int argc, char **argv){
 
       while(nh.ok()){
 		message = socket_read(&socket);
-		ROS_INFO_STREAM_NAMED(NAME, "Received message id: " << message->id() << " with size: " << message->ByteSize()/1024 << " KiB and " << message->images_size() << " images");
+		//ROS_INFO_STREAM_NAMED(NAME, "Received message id: " << message->id() << " with size: " << message->ByteSize() << " Byte, " << message->ByteSize()/1024 << " KiB and " << message->images_size() << " images");
 		/* Sensor messages */
-
 
 		ladybug::sensors sensor_msg;
 		sensor_msg.header.frame_id = sensorTopic;
@@ -76,17 +75,14 @@ int main(int argc, char **argv){
 
 		/* images */
 		for(int i = 0; i< message->images_size(); ++i){
-
 			if( message->images(i).has_packages()){ /* packages send also */
 				ladybug::image msg;
-
 				msg.header.seq = sequence;
 				msg.serial_number = message->serial_number();
 				msg.width = message->images(i).width();
 				msg.height = message->images(i).height();
 				msg.header.stamp =  ros::Time(message->time().ulseconds(), message->time().ulmicroseconds()*1000 );
-
-				msg.camera_number = i;
+				msg.image_type = message->images(i).type();
 				msg.camera = message->camera();
 				msg.color_encoding = message->images(i).color_encoding();
 				msg.bayer_encoding = message->images(i).bayer_encoding();
@@ -110,6 +106,8 @@ int main(int argc, char **argv){
 					case 1:{
 						zmq::message_t rgb;
 						socket.recv(&rgb);
+						//ROS_INFO_STREAM_NAMED(NAME, "image " << i << " with size: " << rgb.size() << " Byte, " << rgb.size()/1024 << " KiB");
+
 						msg.raw = std::vector<uchar>((char*)rgb.data(), (char*)rgb.data()+rgb.size());
 						break;
 					}
@@ -118,6 +116,8 @@ int main(int argc, char **argv){
 						zmq::message_t g;
 						zmq::message_t b;
 						socket.recv(&r);
+						//ROS_INFO_STREAM_NAMED(NAME, "image " << i << " with size: " << r.size() << " Byte, " << r.size()/1024 << " KiB");
+
 						socket.recv(&g);
 						socket.recv(&b);
 						msg.r = std::vector<uchar>((char*)r.data(), (char*)r.data()+r.size());
