@@ -17,4 +17,6 @@ std::string getSensorTopic(ladybug5_network::pbMessage* message);
 std::string getCompressedMessageTopic(ladybug5_network::pbMessage* message);
 std::string make_daytime_string();
 
+bool isCameraServiceNeeded(ladybug5_network::ImageType type);
+
 #endif /* HELPER_H_ */

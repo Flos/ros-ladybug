@@ -28,3 +28,17 @@ std::string make_daytime_string(){
   time_t now = time(0);
   return ctime(&now);
 }
+
+bool isCameraServiceNeeded(ladybug5_network::ImageType type){
+	switch (type){
+		case ladybug5_network::LADYBUG_RAW_CAM0:
+		case ladybug5_network::LADYBUG_RAW_CAM1:
+		case ladybug5_network::LADYBUG_RAW_CAM2:
+		case ladybug5_network::LADYBUG_RAW_CAM3:
+		case ladybug5_network::LADYBUG_RAW_CAM4:
+		case ladybug5_network::LADYBUG_RAW_CAM5:
+			return true;
+		default:
+			return false;
+	}
+}
