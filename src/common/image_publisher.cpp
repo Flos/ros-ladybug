@@ -30,13 +30,15 @@ void
 image_publisher::callback(const ladybug::image &input)
 {
 	if(it_ == NULL){
-		// Create image transport
-
+		// Create camera_service
 		char name[255];
-		std::sprintf(name,"ladybug_%s_camera%d_h%d_w%d", input.serial_number.c_str(), input.camera_number,  input.height, input.width);
-		it_ = new image_transport::ImageTransport(n_);
+		std::sprintf(name,"ladybug_%s_camera%s_h%d_w%d", input.serial_number.c_str(), getCameraName(input.image_type).c_str(),  input.height, input.width);
+		ROS_INFO_STREAM("Creating camera service: " << name);
 		camera_service = new camera_info_manager::CameraInfoManager(n_, name);
+		pub_info_ = n_.advertise<sensor_msgs::CameraInfo>(getSubTopic(subscribe_topic_)+"/camera_info", 1);
 
+		// Create image transport
+		it_ = new image_transport::ImageTransport(n_);
 		pub_ = it_->advertise(publish_topic_, 1);
 
 		// Create Transform
@@ -56,8 +58,8 @@ image_publisher::callback(const ladybug::image &input)
 //		cam_info_msg.K[4] = input.focalY;
 //		cam_info_msg.K[5] = input.centerY;
 //		cam_info_msg.K[8] = 1;
-	    pub_info_ = n_.advertise<sensor_msgs::CameraInfo>(getSubTopic(subscribe_topic_)+"/camera_info", 1);
 	}
+
 	br.sendTransform(tf::StampedTransform(transform, input.header.stamp, "ladybug_link", input.header.frame_id));
 	sensor_msgs::CameraInfo caminfo = camera_service->getCameraInfo();
 	caminfo.header = input.header;
