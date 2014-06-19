@@ -21,10 +21,22 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 
 	if(!message->raw.empty())
 	{
-		image = cv::imdecode(message->raw, CV_LOAD_IMAGE_COLOR);
+		/*Check if encoding matches the expected OpenCV encoding */
+		if( message->bayer_encoding == "BGR8"){
+			image = cv::Mat(message->raw).reshape(3, message->height);
+			out_msg.encoding = sensor_msgs::image_encodings::BGR8;
+		}
+		else if(message->bayer_encoding == "BGRU8" || message->bayer_encoding == "BGRA8" ){
+			image = cv::Mat(message->raw).reshape(4, message->height);
+			out_msg.encoding = sensor_msgs::image_encodings::BGRA8;
+		}
+		else{
+			image = cv::imdecode(message->raw, CV_LOAD_IMAGE_COLOR);
+			out_msg.encoding = sensor_msgs::image_encodings::RGB8;
+		}
 		cv::Rect border(message->border_left, message->border_top, image.cols - message->border_right - message->border_left, image.rows - message->border_bottem - message->border_top);
 		out_msg.image = image(border);
-		out_msg.encoding = sensor_msgs::image_encodings::RGB8;
+
 	}else{
 		cv::Mat r,g,b;
 		r = cv::imdecode(message->r, CV_LOAD_IMAGE_GRAYSCALE);
@@ -49,8 +61,9 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 		channels.clear();
 		out_msg.encoding = sensor_msgs::image_encodings::RGB8;
 		out_msg.image = image; //image;
-		image.release();
 	}
+
+	image.release();
 	//rotate(image, -90, image);
 	return out_msg.toImageMsg();
 }
