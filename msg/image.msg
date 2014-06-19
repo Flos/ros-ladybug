@@ -6,7 +6,7 @@ string serial_number
 string camera
 string bayer_encoding
 string color_encoding
-uint32 camera_number
+uint32 image_type
 uint32 step
 uint8[] r
 uint8[] g
