@@ -47,17 +47,25 @@ image_publisher::callback(const ladybug::image &input)
 		transform.setOrigin( tf::Vector3(input.translationX, input.translationY, input.translationZ) );
 		transform.setRotation(quat);
 
-//		// Create CameraInfo
-//		cam_info_msg.header = input.header;
-//		cam_info_msg.width = input.width;
-//		cam_info_msg.height = input.height;
-//		cam_info_msg.distortion_model = sensor_msgs::distortion_models::PLUMB_BOB;
-//		//cam_info_msg.D[0] =
-//		cam_info_msg.K[0] = input.focalX;
-//		cam_info_msg.K[2] = input.centerX;
-//		cam_info_msg.K[4] = input.focalY;
-//		cam_info_msg.K[5] = input.centerY;
-//		cam_info_msg.K[8] = 1;
+		bool local_config;
+		n_.param<bool>("local_config",local_config, false);
+
+		if(!local_config)
+		{
+	//		// Create CameraInfo
+			cam_info_msg.header = input.header;
+			cam_info_msg.width = input.width;
+			cam_info_msg.height = input.height;
+			cam_info_msg.distortion_model = "NONE";
+	//		//cam_info_msg.D[0] =
+			cam_info_msg.K[0] = input.focalX;
+			cam_info_msg.K[2] = input.centerX;
+			cam_info_msg.K[4] = input.focalY;
+			cam_info_msg.K[5] = input.centerY;
+			cam_info_msg.K[8] = 1;
+			camera_service->setCameraInfo(cam_info_msg);
+
+		}
 	}
 
 	br.sendTransform(tf::StampedTransform(transform, input.header.stamp, "ladybug_link", input.header.frame_id));
