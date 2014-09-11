@@ -1,5 +1,10 @@
 #include "opencv_helper.h"
 #include <fstream>
+#include <vector>
+#include <algorithm>
+#include <iterator>
+
+#define SCALE12_16  16
 
 /**
  * Rotate an image
@@ -17,51 +22,122 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 	//get image and convert it
 	cv::Mat image;
 	cv_bridge::CvImage out_msg;
-	out_msg.header = message->header;
 
-	if(!message->raw.empty())
+	cv::Rect border;
+
+	out_msg.header = message->header;
+	out_msg.encoding = sensor_msgs::image_encodings::RGB8;
+
+	if(!message->raw.empty()) //RAW image with bayer pattern
 	{
 		/*Check if encoding matches the expected OpenCV encoding */
 		if( message->bayer_encoding == "BGR8"){
 			image = cv::Mat(message->raw).reshape(3, message->height);
 			out_msg.encoding = sensor_msgs::image_encodings::BGR8;
 		}
-		else if(message->bayer_encoding == "BGRU8" || message->bayer_encoding == "BGRA8" ){
+		else if( message->bayer_encoding == "BGR16"){
+			image = cv::Mat(message->height, message->width, CV_16UC1);
+			memcpy(image.data, message->raw.data(),message->raw.size());
+			out_msg.encoding = sensor_msgs::image_encodings::BGR16;
+		}
+		else if(message->bayer_encoding == "BGRA8"){
 			image = cv::Mat(message->raw).reshape(4, message->height);
 			out_msg.encoding = sensor_msgs::image_encodings::BGRA8;
 		}
-		else{
-			image = cv::imdecode(message->raw, CV_LOAD_IMAGE_COLOR);
+		else if(message->bayer_encoding == "BGRA16" ){
+			image = cv::Mat(message->height/2, message->width/2, CV_16UC4);
+			memcpy(image.data, message->raw.data(),message->raw.size());
+			out_msg.encoding = sensor_msgs::image_encodings::BGRA16;
+		}
+		else if(message->bayer_encoding == "BGGR8" ){
+			image = cv::Mat(message->height, message->width, CV_8UC1);
+			memcpy(image.data, message->raw.data(),message->raw.size());
+			cv::cvtColor(image,image, CV_BayerRG2RGB);
 			out_msg.encoding = sensor_msgs::image_encodings::RGB8;
 		}
-		cv::Rect border(message->border_left, message->border_top, image.cols - message->border_right - message->border_left, image.rows - message->border_bottem - message->border_top);
-		out_msg.image = image(border);
+		else if(message->bayer_encoding == "BGGR16" ){
+			image = cv::Mat(message->height, message->width, CV_16UC1);
+			memcpy(image.data, message->raw.data(),message->raw.size());
+			cv::cvtColor(image,image, CV_BayerRG2RGB);
+			out_msg.encoding = sensor_msgs::image_encodings::RGB16;
+		}
+		else if(message->bayer_encoding == "RGGB8" ){
+			image = cv::Mat(message->height, message->width, CV_8UC1);
+			memcpy(image.data, message->raw.data(),message->raw.size());
+			cv::cvtColor(image,image, CV_BayerBG2RGB);
+			out_msg.encoding = sensor_msgs::image_encodings::BGR8;
+		}
+		else if(message->bayer_encoding == "RGGB16" ){
+			image = cv::Mat(message->height, message->width, CV_16UC1);
+			memcpy(image.data, message->raw.data(),message->raw.size());
+			cv::cvtColor(image,image, CV_BayerBG2RGB);
+			out_msg.encoding = sensor_msgs::image_encodings::RGB16;
+		}
+		else if(message->bayer_encoding == "MONO8" ){
+			image = cv::Mat(message->raw).reshape(1, message->height);
+			out_msg.encoding = sensor_msgs::image_encodings::MONO8;
+		}
+		else if(message->bayer_encoding == "MONO16" ){
+			image = cv::Mat(message->raw).reshape(1, message->height);
+			out_msg.encoding = sensor_msgs::image_encodings::MONO16;
+		}
+		else{
+			image = cv::imdecode(message->raw, CV_LOAD_IMAGE_UNCHANGED );
+			out_msg.encoding = sensor_msgs::image_encodings::BGR8;
+		}
 
 	}else{
 		cv::Mat r,g,b;
-		r = cv::imdecode(message->r, CV_LOAD_IMAGE_GRAYSCALE);
-		cv::Rect border(message->border_left, message->border_top, r.cols - message->border_right - message->border_left, r.rows - message->border_bottem - message->border_top);
+		if(!message->r.empty())
+		{
+			if( message->color_encoding.empty() || message->color_encoding == "jpg8"){
+				r = cv::imdecode(message->r, CV_LOAD_IMAGE_UNCHANGED);
+				g = cv::imdecode(message->g, CV_LOAD_IMAGE_UNCHANGED);
+				b = cv::imdecode(message->b, CV_LOAD_IMAGE_UNCHANGED);
+				out_msg.encoding = sensor_msgs::image_encodings::BGR8;
+			}
+			else if(message->color_encoding == "jpg12")
+			{
+				r = cv::imdecode(message->r, CV_LOAD_IMAGE_UNCHANGED | CV_LOAD_IMAGE_ANYDEPTH) * SCALE12_16;
+				g = cv::imdecode(message->g, CV_LOAD_IMAGE_UNCHANGED | CV_LOAD_IMAGE_ANYDEPTH) * SCALE12_16;
+				b = cv::imdecode(message->b, CV_LOAD_IMAGE_UNCHANGED | CV_LOAD_IMAGE_ANYDEPTH) * SCALE12_16;
+				out_msg.encoding = sensor_msgs::image_encodings::BGR16;
+			}
+			else if(message->color_encoding == "jpg16"){
+				r = cv::imdecode(message->r, CV_LOAD_IMAGE_UNCHANGED | CV_LOAD_IMAGE_ANYDEPTH);
+				g = cv::imdecode(message->g, CV_LOAD_IMAGE_UNCHANGED | CV_LOAD_IMAGE_ANYDEPTH);
+				b = cv::imdecode(message->b, CV_LOAD_IMAGE_UNCHANGED | CV_LOAD_IMAGE_ANYDEPTH);
+				out_msg.encoding = sensor_msgs::image_encodings::BGR16;
+			}
 
-		r = r(border);
-		g = cv::imdecode(message->g, CV_LOAD_IMAGE_GRAYSCALE);
-		g = g(border);
-		b = cv::imdecode(message->b, CV_LOAD_IMAGE_GRAYSCALE);
-		b = b(border);
+			if(r.cols == 0 ){
+				std::string error_message = ""+ message->color_encoding+" not supported from opencv";
+				throw new std::runtime_error(error_message);
+			}
+			else if(message->g.empty() == 0 || message->b.empty()){
+				//singel channel image
+				image = r;
+			}
+			else{
+				//3 channels merge image
+				std::vector<cv::Mat> channels;
 
-		std::vector<cv::Mat> channels;
+				channels.push_back(b);
+				channels.push_back(g);
+				channels.push_back(r);
 
-		channels.push_back(r);
-		channels.push_back(g);
-		channels.push_back(b);
+				cv::merge(channels, image);
+				r.release();
+				g.release();
+				b.release();
 
-		cv::merge(channels, image);
-		r.release();
-		g.release();
-		b.release();
-		channels.clear();
-		out_msg.encoding = sensor_msgs::image_encodings::RGB8;
-		out_msg.image = image; //image;
+				channels.clear();
+			}
+		}
 	}
+
+	border = cv::Rect(message->border_left, message->border_top, image.cols - message->border_right - message->border_left, image.rows - message->border_bottem - message->border_top);
+	out_msg.image = image(border);
 
 	image.release();
 	//rotate(image, -90, image);
