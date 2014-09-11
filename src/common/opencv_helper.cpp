@@ -1,6 +1,8 @@
 #include "opencv_helper.h"
 #include <fstream>
 
+#define SCALE12_16  16
+
 /**
  * Rotate an image
  */
@@ -26,9 +28,17 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 			image = cv::Mat(message->raw).reshape(3, message->height);
 			out_msg.encoding = sensor_msgs::image_encodings::BGR8;
 		}
+		else if(message->bayer_encoding == "BGR16" ){
+							image = cv::Mat(message->raw).reshape(3, message->height);
+							out_msg.encoding = sensor_msgs::image_encodings::BGR16;
+		}
 		else if(message->bayer_encoding == "BGRU8" || message->bayer_encoding == "BGRA8" ){
+					image = cv::Mat(message->raw).reshape(4, message->height);
+					out_msg.encoding = sensor_msgs::image_encodings::BGRA8;
+		}
+		else if(message->bayer_encoding == "BGRU16" || message->bayer_encoding == "BGRA16" ){
 			image = cv::Mat(message->raw).reshape(4, message->height);
-			out_msg.encoding = sensor_msgs::image_encodings::BGRA8;
+			out_msg.encoding = sensor_msgs::image_encodings::BGRA16;
 		}
 		else{
 			image = cv::imdecode(message->raw, CV_LOAD_IMAGE_COLOR);
@@ -39,15 +49,29 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 
 	}else{
 		cv::Mat r,g,b;
-		r = cv::imdecode(message->r, CV_LOAD_IMAGE_GRAYSCALE);
-		cv::Rect border(message->border_left, message->border_top, r.cols - message->border_right - message->border_left, r.rows - message->border_bottem - message->border_top);
+		if(!message->color_encoding.empty()){
+			if(message->color_encoding == "JPG12")
+			{
+				r = cv::imdecode(message->r, CV_LOAD_IMAGE_ANYDEPTH) * SCALE12_16;
+				cv::Rect border(message->border_left, message->border_top, r.cols - message->border_right - message->border_left, r.rows - message->border_bottem - message->border_top);
+				r = r(border);
+				g = cv::imdecode(message->g, CV_LOAD_IMAGE_ANYDEPTH) * SCALE12_16;
+				g = g(border);
+				b = cv::imdecode(message->b, CV_LOAD_IMAGE_ANYDEPTH) * SCALE12_16;
+				b = b(border);
+			}
+			else if(message->color_encoding == "JPG16"){
+				r = cv::imdecode(message->r, CV_LOAD_IMAGE_ANYDEPTH);
+				cv::Rect border(message->border_left, message->border_top, r.cols - message->border_right - message->border_left, r.rows - message->border_bottem - message->border_top);
+				r = r(border);
+				g = cv::imdecode(message->g, CV_LOAD_IMAGE_ANYDEPTH);
+				g = g(border);
+				b = cv::imdecode(message->b, CV_LOAD_IMAGE_ANYDEPTH);
+				b = b(border);
+			}
 
-		r = r(border);
-		g = cv::imdecode(message->g, CV_LOAD_IMAGE_GRAYSCALE);
-		g = g(border);
-		b = cv::imdecode(message->b, CV_LOAD_IMAGE_GRAYSCALE);
-		b = b(border);
-
+			out_msg.encoding = sensor_msgs::image_encodings::RGB16;
+		}
 		std::vector<cv::Mat> channels;
 
 		channels.push_back(r);
@@ -59,7 +83,7 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 		g.release();
 		b.release();
 		channels.clear();
-		out_msg.encoding = sensor_msgs::image_encodings::RGB8;
+
 		out_msg.image = image; //image;
 	}
 
