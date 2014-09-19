@@ -60,11 +60,10 @@ add_message_files(
 )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  send_command.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -174,9 +173,25 @@ target_link_libraries(rectification_map_node
 add_dependencies(rectification_map_node 
                 ladybug_generate_messages_cpp
                 )
+                
+#service to control the windows maschiene
+add_executable(service 
+			   src/service/node.cpp
+               src/common/protobuf/imageMessage.pb.cc
+			   src/common/zmq_service.cpp
+			   src/common/ladybug_service.cpp
+			   )
+			   
+target_link_libraries(service 
+		        ${catkin_LIBRARIES}
+		        protobuf
+				zmq
+			   )
 
-## Declare a cpp executable
-# add_executable(ladybug_node src/ladybug_node.cpp)
+## Add cmake target dependencies of the executable/library
+add_dependencies(service 
+				 ladybug_generate_messages_cpp
+				 )
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes

@@ -1,0 +1,5 @@
+# send comand with bool return
+string command
+---
+string message
+bool success
