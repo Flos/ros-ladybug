@@ -18,7 +18,7 @@ getRawImageName(){
 
 std::string
 getReceiverSensorMsgTopicName(){
-	return getTopicName()+"/sensor/rec";
+	return getTopicName()+"/sensors/rec";
 }
 
 std::string
