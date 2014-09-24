@@ -7,9 +7,9 @@ Ladybug_service::Ladybug_service(){
 
 void Ladybug_service::init(ros::NodeHandle &nh){
 	this->nh = &nh;
-	nh.param<std::string>("connection",connection,"tcp://192.168.56.1:28883");
-	nh.param<std::string>("name", node_name, "ladybug_service" );
-	ros_service = nh.advertiseService(node_name, &Ladybug_service::callback_srv, this);
+	nh.param<std::string>("connection",connection,"tcp://192.168.1.11:28883");
+	ros_service = nh.advertiseService(name, &Ladybug_service::callback_srv, this);
+	ROS_INFO_NAMED(name, "ns: %s, name: %s connecting to: %s",nh.getNamespace().c_str(), name, connection.c_str());
 	zmq_service.init(connection, ZMQ_REQ);
 }
 
@@ -21,24 +21,32 @@ bool Ladybug_service::callback_srv(ladybug::send_command::Request &req, ladybug:
 	  //ROS_INFO_NAMED(node_name,"Sending: %s",msg_req.DebugString().c_str());
 
 	  try{
-		  if (zmq_service.send(msg_req) == true && zmq_service.receive(msg_reply) == true){
-			  //ROS_INFO_NAMED(node_name,"got response: %s", msg_reply.DebugString().c_str());
-			  res.success = msg_reply.success();
-			  res.message = msg_reply.info();
+		  if (zmq_service.send(msg_req) == true){
+			  if(zmq_service.receive(msg_reply) == true){
+				  //ROS_INFO_NAMED(node_name,"got response: %s", msg_reply.DebugString().c_str());
+				  res.success = msg_reply.success();
+				  res.message = msg_reply.info();
 
-			  if(!res.success){
-					  res.message += "\nNo path for key: \"" + req.command
-							  + "\" available on \"" + connection + "\"\n"
-							  +"see config above for available keys.\n";
+				  if(!res.success){
+						  res.message += "\nNo path for key: \"" + req.command
+								  + "\" available on \"" + connection + "\"\n"
+								  +"see config above for available keys.\n";
+				  }
+			  }
+			  else{
+				  res.success = false;
+				  res.message = "No response from " + connection;
+				  ROS_INFO_NAMED(name, res.message.c_str());
 			  }
 		  }
-		  else {
-			  ROS_INFO_NAMED(node_name,"no response");
+		  else{
 			  res.success = false;
 			  res.message = "No response from " + connection;
+			  ROS_INFO_NAMED(name, res.message.c_str());
 		  }
-	  }catch(std::exception &e){
-		  ROS_ERROR_NAMED(node_name, "Exception: %s", e.what());
+	  }
+	  catch(std::exception &e){
+		  ROS_ERROR_NAMED(name, "Exception: %s", e.what());
 		  res.success = false;
 		  return false;
 	  }

@@ -3,9 +3,10 @@
 #include "ladybug/send_command.h"
 #include "zmq_service.h"
 
+#define name "windows"
+
 class Ladybug_service{
 private:
-	std::string node_name;
 	std::string connection;
 
 	Zmq_service zmq_service;
