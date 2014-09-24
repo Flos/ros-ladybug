@@ -28,9 +28,9 @@ sensor_publisher::callback(const ladybug::sensors &input)
 		ROS_INFO("publisher created");
 		//Topic to publish
 		publish_topic_ = getTopicName()+"/sensors";
-		pub_humidity_ = n_.advertise<sensor_msgs::RelativeHumidity>(publish_topic_ + "relative_humidity", 1);
-		pub_temperature_ = n_.advertise<sensor_msgs::Temperature>(publish_topic_ + "temperature", 1);
-		pub_imu_ = n_.advertise<sensor_msgs::Imu>(publish_topic_ + "imu", 1);
+		pub_humidity_ = n_.advertise<sensor_msgs::RelativeHumidity>(publish_topic_ + "/relative_humidity", 1);
+		pub_temperature_ = n_.advertise<sensor_msgs::Temperature>(publish_topic_ + "/temperature", 1);
+		pub_imu_ = n_.advertise<sensor_msgs::Imu>(publish_topic_ + "/imu", 1);
 		hasPublisher = true;
 	}
 	else{ /* not looking right */
