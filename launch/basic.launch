@@ -1,6 +1,7 @@
 <launch>
         <group ns="ladybug5">
                 <node name="receiver"             pkg="ladybug" type="receiver"/>
+                <node name="sensors"			  pkg="ladybug" type="sensor_node"/>
                 <node name="image_node"           pkg="ladybug" type="image_node"/>
                 <node name="windows"		      pkg="ladybug" type="service">
                 	<param name="connection" 	value="tcp://192.168.1.11:28883"/>
