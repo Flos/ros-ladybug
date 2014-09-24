@@ -1,0 +1,5 @@
+<launch>
+    <node name="receiver"             pkg="ladybug" type="receiver"/>
+    <node name="image_node"           pkg="ladybug" type="image_node"/>
+    <node name="service"              pkg="ladybug" type="service"/>
+</launch>
