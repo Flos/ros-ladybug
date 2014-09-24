@@ -23,7 +23,7 @@ std::pair<std::string, image_publisher*> createImageProcess(std::string subscrib
 void threadUpdateTopics(){
 
 	ROS_INFO_NAMED(NAME, "Starting Topic subscriber");
-	ros::NodeHandle nh;
+	ros::NodeHandle nh("~");
 	std::map<std::string, image_publisher*> processing;
 
 	while(nh.ok())

@@ -22,7 +22,7 @@ std::pair<std::string, image_rectified_publisher*> createImageRectificationProce
 void threadUpdateTopics(){
 
 	ROS_INFO_NAMED(NAME, "Starting Topic subscriber");
-	ros::NodeHandle nh;
+	ros::NodeHandle nh("~");
 	std::map<std::string, image_rectified_publisher*> processing;
 	std::vector<std::string> topics;
 

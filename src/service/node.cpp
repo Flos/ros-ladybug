@@ -9,8 +9,8 @@ main(int argc, char** argv)
 {
 
   // Initialize ROS
-  ros::init (argc, argv, "ladybug_service");
-  ros::NodeHandle n;
+  ros::init (argc, argv, name);
+  ros::NodeHandle n("~");
 
   Ladybug_service service;
   service.init(n);

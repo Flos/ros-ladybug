@@ -23,7 +23,7 @@ std::pair<std::string, sensor_publisher*> createSensorProcess(std::string subscr
 void threadUpdateTopics(){
 
 	ROS_INFO_NAMED(NAME, "Starting Topic subscriber");
-	ros::NodeHandle nh;
+	ros::NodeHandle nh("~");
 	std::map<std::string, sensor_publisher*> processing;
 
 	while(nh.ok())

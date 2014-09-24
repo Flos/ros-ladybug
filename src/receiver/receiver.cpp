@@ -24,7 +24,7 @@ int main(int argc, char **argv){
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ros::init(argc, argv, NAME);
-  ros::NodeHandle nh;
+  ros::NodeHandle nh("~");
 
   std::map<std::string, ros::Publisher*> publisher_map;
   unsigned int sequence = 0;
