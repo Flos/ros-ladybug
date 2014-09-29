@@ -121,6 +121,7 @@ add_executable(image_node
                 src/common/image_publisher.cpp 
                 src/common/opencv_helper.cpp
                 src/common/topic_names.cpp
+                src/common/debug.cpp 
                 )
 target_link_libraries(image_node 
                 ${catkin_LIBRARIES}
@@ -135,6 +136,7 @@ add_library(image_nodelet
                 src/common/image_publisher.cpp 
                 src/common/opencv_helper.cpp
                 src/common/topic_names.cpp
+                src/common/debug.cpp 
                 )
 target_link_libraries(image_nodelet
                 ${catkin_LIBRARIES}
@@ -148,6 +150,7 @@ add_library(receiver_nodelet
 				src/common/protobuf/imageMessage.pb.cc
                 src/common/topic_names.cpp
 			    src/common/zmq_service.cpp
+			    src/common/debug.cpp 
 )
 
 target_link_libraries(receiver_nodelet 

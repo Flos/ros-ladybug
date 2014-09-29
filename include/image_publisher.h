@@ -16,6 +16,7 @@
 #include "topic_names.h"
 #include <tf/transform_broadcaster.h>
 #include "sensor_msgs/distortion_models.h"
+#include "debug.h"
 
 class image_publisher {
 public:

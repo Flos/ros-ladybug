@@ -15,6 +15,7 @@
 #include <sensor_msgs/image_encodings.h>
 #include "topic_names.h"
 #include <boost/thread.hpp>
+#include "debug.h"
 
 #ifndef RECEIVERNODELET_H_
 #define RECEIVERNODELET_H_
