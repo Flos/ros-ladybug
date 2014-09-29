@@ -75,6 +75,7 @@ image_publisher::callback(const ladybug::image &input)
 
 	if(pub_.getNumSubscribers()>0){
 		pub_.publish(createImgPtr(&input));
+		debug_header("image_publisher", caminfo.header);
 	}
 }
 

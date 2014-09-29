@@ -63,7 +63,6 @@ namespace ladybug
 
 	void
 	Receiver_nodelet::handle_message(ladybug5_network::pbMessage &recv_msg){
-		ROS_INFO_NAMED(name,"handle message start");
 		ladybug::sensors sensor_msg;
 		sensor_msg.header.frame_id = "ladybug_link";
 		sensor_msg.header.seq = sequence;
@@ -84,8 +83,8 @@ namespace ladybug
 		sensor_msg.temperature = recv_msg.sensors().temperature();
 		sensor_msg.humidity = recv_msg.sensors().humidity();
 		sensor_msg.barometer = recv_msg.sensors().barometer();
+		debug_header(name, sensor_msg.header);
 
-		ROS_INFO_NAMED(name,"image loop");
 		/* images */
 		for(int i = 0; i< recv_msg.images_size(); ++i){
 			if( recv_msg.images(i).has_packages()){ /* packages send also */

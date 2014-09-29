@@ -16,6 +16,7 @@
 #include <map>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
+#include "debug.h"
 
 namespace ladybug {
 
