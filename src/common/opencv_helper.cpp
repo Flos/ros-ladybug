@@ -85,7 +85,7 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 
 //			ROS_INFO("sinlge color jpg");
 			image = cv::imdecode(message->raw, CV_LOAD_IMAGE_ANYCOLOR | CV_LOAD_IMAGE_ANYDEPTH);
-			out_msg.encoding = sensor_msgs::image_encodings::RGB8; //
+			out_msg.encoding = message->bayer_encoding;
 		}
 
 	}
