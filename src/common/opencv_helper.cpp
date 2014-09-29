@@ -97,20 +97,20 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 		}
 		else{ //Preprocessed
 			/*Check if encoding matches the expected OpenCV encoding */
-			if( message->bayer_encoding == "BGR8"){
+			if( boost::icontains(message->bayer_encoding,"BGR8")){
 				image = cv::Mat(message->raw).reshape(3, message->height);
 				out_msg.encoding = sensor_msgs::image_encodings::BGR8;
 			}
-			else if( message->bayer_encoding == "BGR16"){
+			else if( boost::icontains(message->bayer_encoding, "BGR16")){
 				image = cv::Mat(message->height, message->width, CV_16UC3);
 				memcpy(image.data, message->raw.data(),message->raw.size());
 				out_msg.encoding = sensor_msgs::image_encodings::BGR16;
 			}
-			else if(message->bayer_encoding == "BGRA8"){
+			else if(boost::icontains(message->bayer_encoding, "BGRA8")){
 				image = cv::Mat(message->raw).reshape(4, message->height);
 				out_msg.encoding = sensor_msgs::image_encodings::BGRA8;
 			}
-			else if(message->bayer_encoding == "BGRA16" ){
+			else if(boost::icontains(message->bayer_encoding, "BGRA16" )){
 				image = cv::Mat(message->height, message->width, CV_16UC4);
 				memcpy(image.data, message->raw.data(),message->raw.size());
 				out_msg.encoding = sensor_msgs::image_encodings::BGRA16;
@@ -118,33 +118,33 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 
 
 			// Bayer encodings
-			else if(message->bayer_encoding == "BGGR8" ){
+			else if(boost::icontains(message->bayer_encoding, "BGGR8" )){
 				image = cv::Mat(message->raw).reshape(4, message->height/2);
 				cv::cvtColor(image,image, CV_BayerRG2RGB);
 				out_msg.encoding = sensor_msgs::image_encodings::RGB8;
 			}
-			else if(message->bayer_encoding == "BGGR16" ){
+			else if(boost::icontains(message->bayer_encoding, "BGGR16" )){
 				image = cv::Mat(message->height, message->width, CV_16UC1);
 				memcpy(image.data, message->raw.data(),message->raw.size());
 				cv::cvtColor(image,image, CV_BayerRG2RGB);
 				out_msg.encoding = sensor_msgs::image_encodings::RGB16;
 			}
-			else if(message->bayer_encoding == "RGGB8" ){
+			else if(boost::icontains(message->bayer_encoding,"RGGB8" )){
 				image = cv::Mat(message->raw).reshape(4, message->height/2);
 				cv::cvtColor(image,image, CV_BayerBG2RGB);
 				out_msg.encoding = sensor_msgs::image_encodings::RGB8;
 			}
-			else if(message->bayer_encoding == "RGGB16" ){
+			else if(boost::icontains(message->bayer_encoding, "RGGB16" )){
 				image = cv::Mat(message->height, message->width, CV_16UC1);
 				memcpy(image.data, message->raw.data(),message->raw.size());
 				cv::cvtColor(image,image, CV_BayerBG2RGB);
 				out_msg.encoding = sensor_msgs::image_encodings::RGB16;
 			}
-			else if(message->bayer_encoding == "MONO8" ){
+			else if(boost::icontains(message->bayer_encoding, "MONO8" )){
 				image = cv::Mat(message->raw).reshape(1, message->height);
 				out_msg.encoding = sensor_msgs::image_encodings::MONO8;
 			}
-			else if(message->bayer_encoding == "MONO16" ){
+			else if(boost::icontains(message->bayer_encoding, "MONO16" )){
 				image = cv::Mat(message->raw).reshape(1, message->height);
 				out_msg.encoding = sensor_msgs::image_encodings::MONO16;
 			}
