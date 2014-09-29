@@ -4,7 +4,7 @@
   </node>
   
   <node pkg="nodelet" type="nodelet" name="Receiver_nodelet" args="load ladybug/Receiver_nodelet standalone_nodelet" output="screen">
-  	<param name="connection" 	value="tcp://192.168.11.1:28882"/>
+  	<param name="connection" 	value="tcp://*:28882"/>
   </node>
   
   <node pkg="nodelet" type="nodelet" name="Image_nodelet" args="load ladybug/Image_nodelet standalone_nodelet" output="screen" />

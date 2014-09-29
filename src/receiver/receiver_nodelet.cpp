@@ -18,7 +18,7 @@ namespace ladybug
 		name = "Receiver_nodelet";
 		sequence = 0;
 		nh = getMTPrivateNodeHandle();
-		nh.param<std::string>("connection", connection, "tcp://192.168.1.11:28882");
+		nh.param<std::string>("connection", connection, "tcp://*:28882");
 
 
 		//nh.param("buffer_size", )
@@ -33,6 +33,7 @@ namespace ladybug
 		zmq_service.cfg_buffer_recv = 1;
 		zmq_service.cfg_linger = 2;
 		zmq_service.cfg_request_timeout = 2;
+		zmq_service.cfg_force_bind = true;
 		zmq_service.init(connection, ZMQ_SUB);
 
 		 ladybug5_network::pbMessage message;

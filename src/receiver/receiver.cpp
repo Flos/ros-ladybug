@@ -12,19 +12,22 @@
 #include "topic_names.h"
 
 #define NAME "receiver"
-#define ZMQ_BUFFER_SIZE 20
+#define ZMQ_BUFFER_SIZE 5
 
 int main(int argc, char **argv){
-  std::string connection = "tcp://*:28882";
+  std::string connection = "";
   int zmqBufferSize = ZMQ_BUFFER_SIZE;
 
-  ROS_INFO_STREAM_NAMED(NAME, "Starting publisher, listening on " << connection.c_str());
-  ROS_INFO_STREAM_NAMED(NAME, "Maximum Messages in Buffer "<< zmqBufferSize);
+
 
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ros::init(argc, argv, NAME);
   ros::NodeHandle nh("~");
+  nh.param<std::string>("connection", connection, "tcp://*:28882");
+
+  ROS_INFO_STREAM_NAMED(NAME, "Starting publisher, listening on " << connection.c_str());
+  ROS_INFO_STREAM_NAMED(NAME, "Maximum Messages in Buffer "<< zmqBufferSize);
 
   std::map<std::string, ros::Publisher*> publisher_map;
   unsigned int sequence = 0;
@@ -32,7 +35,7 @@ int main(int argc, char **argv){
   if (publisher_map.find(sensorTopic) == publisher_map.end()) {
 		//create new publisher
 		ros::Publisher* pub =  new ros::Publisher();
-		*pub = nh.advertise<ladybug::sensors>(sensorTopic, 5);
+		*pub = nh.advertise<ladybug::sensors>(sensorTopic, 1);
 		publisher_map.insert(std::pair<std::string, ros::Publisher*>(sensorTopic, pub));
 	}
   ros::Publisher* sensor_raw_publisher = publisher_map.find(sensorTopic)->second;
@@ -133,7 +136,7 @@ int main(int argc, char **argv){
 				if (publisher_map.find(id) == publisher_map.end()) {
 					//create new publisher
 					ros::Publisher* pub =  new ros::Publisher();
-					*pub = nh.advertise<ladybug::image>(id, 5);
+					*pub = nh.advertise<ladybug::image>(id, 1);
 					publisher_map.insert(std::pair<std::string, ros::Publisher*>(id, pub));
 				}
 				ros::Publisher* pub = publisher_map.find(id)->second;
@@ -148,7 +151,7 @@ int main(int argc, char **argv){
 		ros::spinOnce();
       }
   }catch (std::exception& e) {
-      std::cerr << e.what() << std::endl;
+      ROS_ERROR_NAMED(NAME, "Exception %s",  e.what());
   }
 
   google::protobuf::ShutdownProtobufLibrary();

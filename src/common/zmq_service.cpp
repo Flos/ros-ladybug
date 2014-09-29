@@ -10,6 +10,7 @@ Zmq_service::Zmq_service(void)
 	cfg_buffer_recv = 1;
 	cfg_buffer_send = 1;
 	cfg_linger =  2;
+	cfg_force_bind = false;
 	retries_left = 0;
 	zmq_context = NULL;
 	zmq_socket = NULL;
@@ -178,19 +179,23 @@ Zmq_service::init(std::string socket, int type)
     	throw new std::runtime_error("Cannot create zmq socket");
     }
 
-
-	switch (cfg_type){
-		case ZMQ_REQ:
-		case ZMQ_PULL:
-		case ZMQ_SUB:
-			printf("connect socket: %s\n", cfg_connection.c_str());
-			zmq_socket->connect(cfg_connection.c_str());
-			break;
-		default:
-			printf("bind socket: %s\n", cfg_connection.c_str());
-			zmq_socket->bind(cfg_connection.c_str());
-			break;
-	}
+    if(cfg_force_bind){
+    	zmq_socket->bind(cfg_connection.c_str());
+    }
+    else{
+		switch (cfg_type){
+			case ZMQ_REQ:
+			case ZMQ_PULL:
+			case ZMQ_SUB:
+				printf("connect socket: %s\n", cfg_connection.c_str());
+				zmq_socket->connect(cfg_connection.c_str());
+				break;
+			default:
+				printf("bind socket: %s\n", cfg_connection.c_str());
+				zmq_socket->bind(cfg_connection.c_str());
+				break;
+		}
+    }
 }
 
 void

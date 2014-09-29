@@ -19,6 +19,7 @@ public:
 	int cfg_buffer_send;
 	int cfg_buffer_recv;
 	int cfg_linger;
+	bool cfg_force_bind;
 
 	void init(std::string socket, int type);
 
