@@ -129,6 +129,34 @@ add_dependencies(image_node
                 ladybug_generate_messages_cpp
                 )
 
+#Image processing nodelet
+add_library(image_nodelet 
+                src/image_node/image_nodelet.cpp 
+                src/common/image_publisher.cpp 
+                src/common/opencv_helper.cpp
+                src/common/topic_names.cpp
+                )
+target_link_libraries(image_nodelet
+                ${catkin_LIBRARIES}
+                )
+add_dependencies(image_nodelet
+                ladybug_generate_messages_cpp
+                )
+                
+add_library(receiver_nodelet
+				src/receiver/receiver_nodelet.cpp
+				src/common/protobuf/imageMessage.pb.cc
+                src/common/topic_names.cpp
+			    src/common/zmq_service.cpp
+)
+
+target_link_libraries(receiver_nodelet 
+                ${catkin_LIBRARIES} 
+                protobuf 
+                zmq
+                )
+
+
 #ZMQ Image receiver node (network)
 add_executable(receiver 
                 src/receiver/receiver.cpp 

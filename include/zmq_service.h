@@ -8,15 +8,18 @@
 #include <string>
 #include <stdexcept>
 
-#define REQUEST_TIMEOUT 10 // msecs, (> 1000!)
-#define REQUEST_RETRIES 3 // Before we abandon
-
 class Zmq_service
 {
 public:
 	Zmq_service(void);
-	std::string connection;
-	int type;
+	std::string cfg_connection;
+	int cfg_type;
+	int cfg_retries;
+	int cfg_request_timeout;
+	int cfg_buffer_send;
+	int cfg_buffer_recv;
+	int cfg_linger;
+
 	void init(std::string socket, int type);
 
 	bool send(google::protobuf::Message& pb_msg, int flag = 0);
@@ -32,8 +35,8 @@ public:
 	bool receive(ladybug5_network::pbMessage& pb_msg, int flag = 0);
 	bool receive(zmq::message_t &msg, int flag = 0);
 
-
 	void reset_state();
+	void re_init();
 
 	~Zmq_service(void);
 private:
@@ -42,5 +45,5 @@ private:
 	zmq::socket_t* zmq_socket;
 	int retries_left;
 };
-#endif ZMQ_SERVICE_H_
 
+#endif ZMQ_SERVICE_H_
