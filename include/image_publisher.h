@@ -29,8 +29,6 @@ private:
   image_transport::ImageTransport *it_;
   image_transport::Publisher pub_;
   ros::Publisher pub_info_;
-  tf::TransformBroadcaster br;
-  tf::Transform transform;
   std::string subscribe_topic_;
   std::string publish_topic_;
   std::string camera_;

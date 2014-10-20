@@ -41,12 +41,6 @@ image_publisher::callback(const ladybug::image &input)
 		it_ = new image_transport::ImageTransport(n_);
 		pub_ = it_->advertise(publish_topic_, 1);
 
-		// Create Transform
-		tf::Quaternion quat;
-		quat.setRPY(input.rotationX, input.rotationY, input.rotationZ);
-		transform.setOrigin( tf::Vector3(input.translationX, input.translationY, input.translationZ) );
-		transform.setRotation(quat);
-
 		bool local_config;
 		n_.param<bool>("local_config",local_config, false);
 
@@ -68,7 +62,6 @@ image_publisher::callback(const ladybug::image &input)
 		}
 	}
 
-	br.sendTransform(tf::StampedTransform(transform, input.header.stamp, "ladybug_link", input.header.frame_id));
 	sensor_msgs::CameraInfo caminfo = camera_service->getCameraInfo();
 	caminfo.header = input.header;
 	pub_info_.publish(caminfo);
