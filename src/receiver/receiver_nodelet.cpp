@@ -30,7 +30,7 @@ namespace ladybug
 
 	void
 	Receiver_nodelet::loop(){
-		zmq_service.cfg_buffer_recv = 1;
+		zmq_service.cfg_buffer_recv = 20;
 		zmq_service.cfg_linger = 2;
 		zmq_service.cfg_request_timeout = 2;
 		zmq_service.cfg_force_bind = true;
