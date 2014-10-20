@@ -23,7 +23,7 @@ Zmq_service::Zmq_service(void)
 //
 void
 Zmq_service::create_socket(int type) {
-	printf( "connecting to server…" );
+	//printf( "connecting to server…" );
 	zmq_socket = new zmq::socket_t(*zmq_context, type);
 
 	// Configure socket to not wait at close time
@@ -135,7 +135,7 @@ Zmq_service::receive(ladybug5_network::pbMessage& pb_msg, int flag){
 
 bool 
 Zmq_service::receive(zmq::message_t &msg, int flag){
-	printf("recv\n");
+	//printf("recv\n");
 	bool success = false;
 	if(flag == ZMQ_NOBLOCK){
 		success = zmq_socket->recv(&msg, flag);
@@ -145,7 +145,7 @@ Zmq_service::receive(zmq::message_t &msg, int flag){
 		zmq::pollitem_t items[] = { { *zmq_socket, 0, ZMQ_POLLIN, 0 } };
 		zmq::poll (&items[0], 1, cfg_request_timeout * 1000);
 		if (items[0].revents & ZMQ_POLLIN){
-			printf("recv pollin\n");
+			//printf("recv pollin\n");
 			success = zmq_socket->recv(&msg, flag);
 		}
 		else{
@@ -158,14 +158,14 @@ Zmq_service::receive(zmq::message_t &msg, int flag){
 	if(success){
 		retries_left = cfg_retries;
 	}
-	printf("sucess: %i retries_left: %i\n",success, retries_left);
+	//printf("sucess: %i retries_left: %i\n",success, retries_left);
 	return success;
 }
 
 void
 Zmq_service::init(std::string socket, int type)
 {
-	printf("init \n");
+	//printf("init \n");
 	retries_left = cfg_retries;
 
 	//ZMQ
@@ -201,7 +201,7 @@ Zmq_service::init(std::string socket, int type)
 void
 Zmq_service::reset_state(){
 
-	printf( "Reset " );
+	//printf( "Reset " );
 	zmq_socket->disconnect(cfg_connection.c_str());
 	zmq_socket->close();
 	delete zmq_socket;
