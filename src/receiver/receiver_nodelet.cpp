@@ -43,21 +43,19 @@ namespace ladybug
 
 				if(zmq_service.receive(message))
 				{
-					ROS_INFO_NAMED(name,"message ok");
+					//ROS_INFO_NAMED(name,"message ok");
 					handle_message(message);
 					message.Clear();
 				}
 				else{
-					ROS_INFO_NAMED(name,"no message");
+					//ROS_INFO_NAMED(name,"no message");
 					zmq_service.re_init();
 				}
-				usleep(60);
+				usleep(1);
 			}
 		}catch (std::exception& e) {
 			ROS_ERROR_NAMED(name, "exception in loop: %s ", e.what());
 		}
-
-
 		ROS_DEBUG_NAMED(name, "STOPPING");
 	}
 
@@ -160,7 +158,7 @@ namespace ladybug
 			*sensor_raw_publisher = nh.advertise<ladybug::sensors>(getReceiverSensorMsgTopicName(), 1);
 		}
 		sensor_raw_publisher->publish(sensor_msg);
-		ROS_INFO_NAMED(name,"handle message end");
+		//ROS_INFO_NAMED(name,"handle message end");
 	}
 
 	void
