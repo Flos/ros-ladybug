@@ -10,7 +10,7 @@
   <node pkg="nodelet" type="nodelet" name="Image_nodelet" args="load ladybug/Image_nodelet standalone_nodelet" output="screen" />
   
   <node name="service"	  		  pkg="ladybug" type="service" output="screen">
-  	<param name="connection" 	value="tcp://192.168.11.1:28883"/>
+  	<param name="connection" 	value="tcp://192.168.1.11:28883"/>
   </node>
                
 </launch>
