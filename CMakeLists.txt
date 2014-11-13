@@ -205,6 +205,19 @@ add_dependencies(rectification_map_node
                 ladybug_generate_messages_cpp
                 )
                 
+add_library(rectification_nodelet 
+                src/rectification_map/rectifier_nodelet.cpp 
+                src/common/opencv_helper.cpp
+                src/common/topic_names.cpp
+                src/common/debug.cpp 
+                )
+target_link_libraries(rectification_nodelet
+                ${catkin_LIBRARIES}
+                )
+add_dependencies(rectification_nodelet
+                ladybug_generate_messages_cpp
+                )
+                
 #service to control the windows maschiene
 add_executable(service 
 			   src/service/node.cpp
