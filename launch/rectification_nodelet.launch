@@ -1,0 +1,42 @@
+<launch>
+  <node pkg="nodelet" type="nodelet" name="standalone_nodelet2"  args="manager" output="screen">
+  	<param name="num_worker_threads" type="int" value="1" />
+  </node>
+  
+  <node pkg="nodelet" type="nodelet" name="Rectifier_nodelet_cam0" args="load ladybug/Rectifier_nodelet standalone_nodelet2" output="screen">
+  	<param name="sub" 	value="/ladybug5/camera0/image_raw" />
+  	<param name="pub" 	value="/ladybug5/camera0/raw_rect" />
+  	<param name="lut" 	value="$(find ladybug)/conf/calibration/13122828_camera0_h1024_w1224_map_" />
+  </node>
+  
+  <node pkg="nodelet" type="nodelet" name="Rectifier_nodelet_cam1" args="load ladybug/Rectifier_nodelet standalone_nodelet2" output="screen">
+  	<param name="sub" 	value="/ladybug5/camera1/image_raw" />
+  	<param name="pub" 	value="/ladybug5/camera1/raw_rect" />
+  	<param name="lut" 	value="$(find ladybug)/conf/calibration/13122828_camera1_h1024_w1224_map_" />
+  </node>
+  
+  <node pkg="nodelet" type="nodelet" name="Rectifier_nodelet_cam2" args="load ladybug/Rectifier_nodelet standalone_nodelet2" output="screen">
+  	<param name="sub" 	value="/ladybug5/camera2/image_raw" />
+  	<param name="pub" 	value="/ladybug5/camera2/raw_rect" />
+  	<param name="lut" 	value="$(find ladybug)/conf/calibration/13122828_camera2_h1024_w1224_map_" />
+  </node>
+  
+   <node pkg="nodelet" type="nodelet" name="Rectifier_nodelet_cam3" args="load ladybug/Rectifier_nodelet standalone_nodelet2" output="screen">
+  	<param name="sub" 	value="/ladybug5/camera3/image_raw" />
+  	<param name="pub" 	value="/ladybug5/camera3/raw_rect" />
+  	<param name="lut" 	value="$(find ladybug)/conf/calibration/13122828_camera3_h1024_w1224_map_" />
+   </node>
+  
+   <node pkg="nodelet" type="nodelet" name="Rectifier_nodelet_cam4" args="load ladybug/Rectifier_nodelet standalone_nodelet2" output="screen">
+  	<param name="sub" 	value="/ladybug5/camera4/image_raw" />
+  	<param name="pub" 	value="/ladybug5/camera4/raw_rect" />
+  	<param name="lut" 	value="$(find ladybug)/conf/calibration/13122828_camera4_h1024_w1224_map_" />
+  </node>
+  
+   <node pkg="nodelet" type="nodelet" name="Rectifier_nodelet_cam5" args="load ladybug/Rectifier_nodelet standalone_nodelet2" output="screen">
+  	<param name="sub" 	value="/ladybug5/camera5/image_raw" />
+  	<param name="pub" 	value="/ladybug5/camera5/raw_rect" />
+  	<param name="lut" 	value="$(find ladybug)/conf/calibration/13122828_camera5_h1024_w1224_map_" />
+  </node>
+               
+</launch>
