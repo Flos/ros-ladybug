@@ -20,16 +20,17 @@ Rectifier_nodelet::Rectifier_nodelet() {
 void
 Rectifier_nodelet::onInit(){
 	// 1. Get name, topics and lookUpTable path
+	n_ = getPrivateNodeHandle();
 	n_.param<std::string>("name", node_name_ , "rectification_nodelet");
 	n_.param<std::string>("lut", filepath_, "conf/calibration/13122828_");
 	n_.param<std::string>("sub", subscribe_topic_, "/no_topic_selected");
 	n_.param<std::string>("pub", publish_topic_, subscribe_topic_ + "_rect" );
 
 	// 2. Info
-	ROS_INFO_NAMED(node_name_, "image_rectifier nodelet created");
-	ROS_INFO_NAMED(node_name_, "Subscribing\t%s", subscribe_topic_.c_str());
-	ROS_INFO_NAMED(node_name_, "Publishing \t%s", publish_topic_.c_str());
-	ROS_INFO_NAMED(node_name_, "Calibration file Path: \t%s", filepath_.c_str());
+	ROS_INFO_NAMED(node_name_, "name: \t%s", node_name_.c_str());
+	ROS_INFO_NAMED(node_name_, "sub: \t%s", subscribe_topic_.c_str());
+	ROS_INFO_NAMED(node_name_, "pub: \t%s", publish_topic_.c_str());
+	ROS_INFO_NAMED(node_name_, "lut: \t%s", filepath_.c_str());
 
 	// subscribe to topic
 	sub_ = n_.subscribe(subscribe_topic_.c_str(), 1, &Rectifier_nodelet::callback, this);
