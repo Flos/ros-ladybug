@@ -11,6 +11,5 @@
   
   <node name="service"	  		  pkg="ladybug" type="service" output="screen">
   	<param name="connection" 	value="tcp://192.168.1.11:28883"/>
-  </node>
-               
+  </node>  
 </launch>

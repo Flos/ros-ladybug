@@ -1,4 +1,0 @@
-<launch>
-    <node name="image_node"             pkg="ladybug" type="image_node"/>
-    <node name="rectification_map_node" pkg="ladybug" type="rectification_map_node"/>
-</launch>
