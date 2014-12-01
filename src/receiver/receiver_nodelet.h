@@ -10,7 +10,6 @@
 #include "zmq_service.h"
 #include "opencv_helper.h"
 #include <string.h>
-#include <map>
 #include "helper.h"
 #include <sensor_msgs/image_encodings.h>
 #include "topic_names.h"
