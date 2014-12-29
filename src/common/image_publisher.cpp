@@ -57,6 +57,12 @@ image_publisher::callback(const ladybug::image &input)
 			cam_info_msg.K[4] = input.focalY;
 			cam_info_msg.K[5] = input.centerY;
 			cam_info_msg.K[8] = 1;
+
+			cam_info_msg.P[0] = input.focalX;
+			cam_info_msg.P[2] = input.centerX;
+			cam_info_msg.P[5] = input.focalY;
+			cam_info_msg.P[6] = input.centerY;
+			cam_info_msg.P[10] = 1;
 			camera_service->setCameraInfo(cam_info_msg);
 
 		}
