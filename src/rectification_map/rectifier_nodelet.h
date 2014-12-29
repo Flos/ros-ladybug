@@ -10,11 +10,13 @@
 #include "ros/ros.h"
 #include "ladybug/image.h"
 #include "image_transport/image_transport.h"
+#include "camera_info_manager/camera_info_manager.h"
 #include "opencv_helper.h"
 #include <boost/thread.hpp>
 #include "topic_names.h"
 #include <tf/transform_broadcaster.h>
 #include "nodelet/nodelet.h"
+
 
 namespace ladybug {
 
@@ -24,6 +26,7 @@ public:
 	virtual void onInit();
 	virtual ~Rectifier_nodelet();
 	void callback(const sensor_msgs::ImageConstPtr &input);
+	void callback_camera_info(const sensor_msgs::CameraInfo &input_cam_info);
 private:
 	ros::NodeHandle n_;
 	ros::Subscriber sub_;
@@ -35,7 +38,16 @@ private:
 	std::string filepath_;
 	cv::Mat map_x;
 	cv::Mat map_y;
-	void load_maps();
+
+	double zoom_factor_;
+
+	ros::Publisher pub_info_;
+	ros::Subscriber sub_info_;
+	std::string subscriber_info_topic_;
+	std::string publish_info_topic_;
+	sensor_msgs::CameraInfo cam_info_msg;
+
+	void load_maps(double zoom_faktor = 1.0);
 };
 
 } /* namespace ladybug */

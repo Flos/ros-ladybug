@@ -165,7 +165,7 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 }
 
 const sensor_msgs::ImagePtr rectifyImage(const cv_bridge::CvImagePtr &cv_ptr, cv::Mat &map_x, cv::Mat &map_y ){
-	cv::remap(cv_ptr->image, cv_ptr->image, map_x, map_y,0,0);
+	cv::remap(cv_ptr->image, cv_ptr->image, map_x, map_y, 0, 0, cv::Scalar(2,2,2));
 
 	return cv_ptr->toImageMsg();
 }
