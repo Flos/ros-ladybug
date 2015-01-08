@@ -135,7 +135,7 @@ Rectifier_nodelet::callback_camera_info(const sensor_msgs::CameraInfo &input_cam
 	int border_left =  MAX(0,(image_width_zoomed - input_cam_info.width)/2);
 	int border_top =   MAX(0,(image_height_zoomed - input_cam_info.height)/2);
 
-	ROS_INFO_NAMED(node_name_, "border_left: \t%i\t border_top: \t%i", border_left, border_top);
+	ROS_DEBUG_NAMED(node_name_, "border_left: \t%i\t border_top: \t%i", border_left, border_top);
 
 	cam_info_msg.P[2] = (input_cam_info.P[2] * zoom_factor_) - border_left; //cx
 	cam_info_msg.P[6] = (input_cam_info.P[6] * zoom_factor_) - border_top; //cy
