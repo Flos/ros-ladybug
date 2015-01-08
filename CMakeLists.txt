@@ -159,6 +159,8 @@ target_link_libraries(receiver_nodelet
                 zmq
                 )
 
+add_dependencies(receiver_nodelet ladybug_generate_messages_cpp)
+
 
 #ZMQ Image receiver node (network)
 add_executable(receiver 
