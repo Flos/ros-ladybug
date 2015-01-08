@@ -41,6 +41,8 @@
   	<param name="sub" 	value="/ladybug5/camera4/image_raw" />
   	<param name="pub" 	value="/ladybug5/camera4/raw_rect" />
   	<param name="lut" 	value="$(find ladybug)/calibration/13122828_camera4_h1024_w1224_map_" />
+  	<param name="sub_info" 	value="/ladybug5/camera4/camera_info" />
+  	<param name="zoom" 	value="2.2" />
   </node>
   
    <node pkg="nodelet" type="nodelet" name="Rectifier_nodelet_cam5" args="load ladybug/Rectifier_nodelet ladybug_nodelet" output="screen">
