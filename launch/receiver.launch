@@ -1,3 +1,13 @@
 <launch>
-    <node name="receiver"             pkg="ladybug" type="receiver"/>
+	<arg name="nodelet_manager" default="nodelet_manager" />
+	<arg name="connection" 	default="tcp://192.168.1.11:28883" />
+	<arg name="listen" 		default="tcp://*:28882" />
+	
+	<node pkg="nodelet" type="nodelet" name="Receiver_nodelet" args="load ladybug/Receiver_nodelet $(arg nodelet_manager)">
+  		<param name="connection" 	value="$(arg listen)"/>
+	</node>
+
+	<node name="service"	  		  pkg="ladybug" type="service">
+  		<param name="connection" 	value="$(arg connection)"/>
+	</node>
 </launch>

@@ -1,9 +1,0 @@
-<launch>
-    <node name="image_node"             pkg="ladybug" type="image_node"/>
-    <node name="image_proc"             pkg="image_proc" type="image_proc" ns="/ladybug5/camera0/"/>
-    <node name="image_proc"             pkg="image_proc" type="image_proc" ns="/ladybug5/camera1/"/>
-    <node name="image_proc"             pkg="image_proc" type="image_proc" ns="/ladybug5/camera2/"/>
-    <node name="image_proc"             pkg="image_proc" type="image_proc" ns="/ladybug5/camera3/"/>
-    <node name="image_proc"             pkg="image_proc" type="image_proc" ns="/ladybug5/camera4/"/>
-    <node name="image_proc"             pkg="image_proc" type="image_proc" ns="/ladybug5/camera5/"/>
-</launch>
