@@ -2,4 +2,5 @@
 	<arg name="nodelet_manager" default="nodelet_manager" />
 	
     <node pkg="nodelet" type="nodelet" name="Image_nodelet" args="load ladybug/Image_nodelet $(arg nodelet_manager)" />
+    <node pkg="ladybug" type="sensor_node" name="Sensor_node" />
 </launch>

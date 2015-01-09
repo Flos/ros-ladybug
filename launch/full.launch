@@ -9,7 +9,7 @@
 	  	<param name="num_worker_threads" type="int" value="$(arg threads)" />
 	</node>
 	
-	<include if="$(arg connect)" file="$(find ladybug)/launch/nodelet.launch">
+	<include file="$(find ladybug)/launch/nodelet.launch">
 		<arg name="nodelet_manager" value="$(arg nodelet_manager_name)"/>
 		<arg name="connect"			value="$(arg connect)" />
 		<arg name="rectify"			value="$(arg rectify)" />

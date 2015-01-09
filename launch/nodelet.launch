@@ -7,6 +7,10 @@
 	<include if="$(arg connect)" file="$(find ladybug)/launch/receiver.launch">
 		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
 	</include>
+	
+	<include file="$(find ladybug)/launch/image.launch">
+		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
+	</include>	
 
 	<include if="$(arg rectify)" file="$(find ladybug)/launch/rectify.launch">
 		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
