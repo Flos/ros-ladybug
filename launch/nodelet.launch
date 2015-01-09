@@ -12,7 +12,7 @@
 		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
 	</include>	
 
-	<include if="$(arg rectify)" file="$(find ladybug)/launch/rectify.launch">
+	<include if="$(arg rectify)" file="$(find ladybug)/launch/rectify_all.launch">
 		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
 		<arg name="zoom"			default="$(arg zoom)" />
 	</include>            
