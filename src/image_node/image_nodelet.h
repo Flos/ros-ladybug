@@ -26,12 +26,14 @@ public:
 	virtual void onInit();
 	virtual ~Image_nodelet();
 private:
-	void topic_listener();
-	std::pair<std::string, image_publisher*> createImageProcess(std::string subscribe);
-	std::string name;
-	ros::NodeHandle nh;
-	std::map<std::string, image_publisher*> processing;
-	boost::shared_ptr<boost::thread> topic_listener_thread_;
+	//void topic_listener();
+//	std::pair<std::string, image_publisher*> createImageProcess(std::string subscribe);
+//	std::string name;
+//	std::string topic;
+//	std::string frame_id;
+	boost::shared_ptr<image_publisher> inst_;
+//	std::map<std::string, image_publisher*> processing;
+//	boost::shared_ptr<boost::thread> topic_listener_thread_;
 };
 
 } /* namespace ladybug */

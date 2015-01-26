@@ -18,22 +18,34 @@
 #include "sensor_msgs/distortion_models.h"
 #include "debug.h"
 
+
+struct Image_publisher_config{
+  std::string subscribe_topic;
+  std::string publish_topic;
+  std::string publish_topic_info;
+  std::string calibration;
+  std::string frame_id;
+  bool has_config;
+};
+
 class image_publisher {
 public:
-	image_publisher(std::string subscribe_topic);
+	image_publisher(ros::NodeHandle &nh, ros::NodeHandle &nh_private);
 	virtual ~image_publisher();
 	void callback(const ladybug::image &input);
 private:
-  ros::NodeHandle n_;
-  ros::Subscriber sub_;
-  image_transport::ImageTransport *it_;
-  image_transport::Publisher pub_;
-  ros::Publisher pub_info_;
-  std::string subscribe_topic_;
-  std::string publish_topic_;
-  std::string camera_;
+  ros::NodeHandle nh;
+  ros::NodeHandle nh_private;
+
+  ros::Subscriber sub;
+  image_transport::Publisher pub;
+  ros::Publisher pub_info;
+  boost::shared_ptr<image_transport::ImageTransport> it;
+  boost::shared_ptr<camera_info_manager::CameraInfoManager> camera_service;
+
+  Image_publisher_config config;
+
   sensor_msgs::CameraInfo cam_info_msg;
-  camera_info_manager::CameraInfoManager *camera_service;
 };
 
 #endif /* image_publisher_H_ */

@@ -1,0 +1,20 @@
+<launch>
+	<arg name="camera_nr"			default="4" />
+	<arg name="subscribe_topic" 	default="/ladybug5/camera$(arg camera_nr)/rec" />
+	<arg name="publish_topic"		default="/ladybug5/camera$(arg camera_nr)/image_raw" />
+	<arg name="publish_topic_info" 	default="$(arg publish_topic)_info" />
+	<arg name="frame_id"			default="ladybug_camera$(arg camera_nr)" />
+	<arg name="calibration_path"	default="file://$(find ladybug)/calibration/camera$(arg camera_nr).yaml" />
+	
+	<arg name="nodelet_manager" 	default="nodelet_manager" />
+	
+	<group ns="camera$(arg camera_nr)">
+	    <node pkg="nodelet" type="nodelet" name="ladybug_image$(arg camera_nr)_nodelet" args="load ladybug/Image_nodelet /$(arg nodelet_manager)"  output="screen">
+	    	<param name="subscribe_topic" 		value="$(arg subscribe_topic)" />
+	    	<param name="publish_topic" 		value="$(arg publish_topic)" />
+	    	<param name="publish_topic_info" 	value="$(arg publish_topic_info)" />
+	    	<param name="frame_id" 				value="$(arg frame_id)" />
+	    	<param name="calibration"			value="$(arg calibration_path)" />
+	    </node>
+    </group>
+</launch>

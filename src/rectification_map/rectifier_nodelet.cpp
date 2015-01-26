@@ -97,7 +97,7 @@ Rectifier_nodelet::load_maps(double zoom_faktor){
 void
 Rectifier_nodelet::callback(const sensor_msgs::ImageConstPtr &message)
 {
-	cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);
+	cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(message, message->encoding);
 	if(it_ == NULL){
 		// Create image transport
 		it_ = new image_transport::ImageTransport(n_);

@@ -21,7 +21,7 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 	cv::Rect border;
 
 	out_msg.header = message->header;
-	out_msg.encoding = sensor_msgs::image_encodings::RGB8;
+	out_msg.encoding = sensor_msgs::image_encodings::BGR8;
 	//ROS_INFO("color encoding %s bayer %s", message->color_encoding.c_str(), message->bayer_encoding.c_str());
 
 	if(boost::icontains(message->color_encoding, "jpg")){
@@ -34,7 +34,7 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 				r = cv::imdecode(message->r, CV_LOAD_IMAGE_UNCHANGED);
 				g = cv::imdecode(message->g, CV_LOAD_IMAGE_UNCHANGED);
 				b = cv::imdecode(message->b, CV_LOAD_IMAGE_UNCHANGED);
-				out_msg.encoding = sensor_msgs::image_encodings::RGB8;
+				out_msg.encoding = sensor_msgs::image_encodings::BGR8;
 			}
 			else
 //				if(message->color_encoding == "jpg12")
@@ -63,9 +63,9 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 				//3 channels merge image
 				std::vector<cv::Mat> channels;
 
-				channels.push_back(r);
-				channels.push_back(g);
 				channels.push_back(b);
+				channels.push_back(g);
+				channels.push_back(r);
 
 				cv::merge(channels, image);
 				r.release();

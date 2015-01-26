@@ -15,48 +15,20 @@
 
 #define NAME "image_node"
 
-std::pair<std::string, image_publisher*> createImageProcess(std::string subscribe){
-	image_publisher* process = new image_publisher(subscribe);
-	return std::pair<std::string, image_publisher*>(subscribe, process);
-}
-
-void threadUpdateTopics(){
-
-	ROS_INFO_NAMED(NAME, "Starting Topic subscriber");
-	ros::NodeHandle nh("~");
-	std::map<std::string, image_publisher*> processing;
-
-	while(nh.ok())
-	{
-		std::vector<std::string> topics = getTopicsOfType("ladybug/image");
-		for (std::vector<std::string>::const_iterator it = topics.begin(); it != topics.end(); it++)
-		{
-			 if (processing.find(it->data()) == processing.end()) {
-				//create new publisher
-				processing.insert(createImageProcess(it->data()));
-			}
-		}
-		sleep(2);
-	}
-
-	while(!processing.empty()){
-		  delete processing.begin()->second;
-		  processing.erase(processing.begin());
-	}
-	ROS_ERROR_NAMED(NAME, "STOPPING Topic subscriber");
-}
-
 int main(int argc, char **argv){
 
-  ros::init(argc, argv, NAME);
-  ROS_INFO_STREAM("Starting " << NAME);
+	ros::init(argc, argv, NAME);
+	ros::NodeHandle node;
+	ros::NodeHandle priv_nh("~");
 
-  new boost::thread(threadUpdateTopics);
+	image_publisher image_publisher_node(node, priv_nh);
 
-  ros::MultiThreadedSpinner spinner(6);
-  spinner.spin();
+	ros::Rate rate(60);
+	while(node.ok()){
+		ros::spinOnce();
+		rate.sleep();
+	}
 
-
-  ROS_INFO_NAMED(NAME, "STOPPING");
-  return 0;
+	ROS_INFO_NAMED(NAME, "STOPPING");
+	return 0;
 }

@@ -1,6 +1,37 @@
-<launch>
+<launch>	
 	<arg name="nodelet_manager" default="nodelet_manager" />
 	
-    <node pkg="nodelet" type="nodelet" name="Image_nodelet" args="load ladybug/Image_nodelet $(arg nodelet_manager)" />
-    <node pkg="ladybug" type="sensor_node" name="Sensor_node" />
+	<group ns="ladybug5">
+	    <include file="$(find ladybug)/launch/single_image.launch" >
+	    	<arg name="camera_nr"		value="0" />
+	    	<arg name="nodelet_manager"	value="$(arg nodelet_manager)" />
+	    </include>
+	    
+	     <include file="$(find ladybug)/launch/single_image.launch" >
+	    	<arg name="camera_nr"		value="1" />
+	    	<arg name="nodelet_manager"	value="$(arg nodelet_manager)" />
+	    </include>
+	  
+	    <include file="$(find ladybug)/launch/single_image.launch" >
+	    	<arg name="camera_nr"		value="2" />
+	    	<arg name="nodelet_manager"	value="$(arg nodelet_manager)" />
+	    </include>
+	    
+	    <include file="$(find ladybug)/launch/single_image.launch" >
+	    	<arg name="camera_nr"		value="3" />
+	    	<arg name="nodelet_manager"	value="$(arg nodelet_manager)" />
+	    </include>
+	    
+	    <include file="$(find ladybug)/launch/single_image.launch" >
+	    	<arg name="camera_nr"		value="4" />
+	    	<arg name="nodelet_manager"	value="$(arg nodelet_manager)" />
+	    </include>
+	    
+	    <include file="$(find ladybug)/launch/single_image.launch" >
+	    	<arg name="camera_nr"		value="5" />
+	    	<arg name="nodelet_manager"	value="$(arg nodelet_manager)" />
+	    </include>
+	    
+	    <include file="$(find ladybug)/launch/sensor_node.launch" />
+    </group>
 </launch>
