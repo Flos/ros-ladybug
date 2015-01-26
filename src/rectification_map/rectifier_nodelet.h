@@ -40,6 +40,9 @@ private:
 	cv::Mat map_y;
 
 	double zoom_factor_;
+	bool rotate_;
+
+	std::string frame_id_;
 
 	ros::Publisher pub_info_;
 	ros::Subscriber sub_info_;

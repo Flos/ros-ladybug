@@ -2,6 +2,10 @@
 	<arg name="camera"			default="4" />
 	<arg name="zoom"			default="2.2" />
 	<arg name="nodelet_manager" default="nodelet_manager" />
+	<arg name="rotate"			default="true" />
+	
+	<arg if="$(arg rotate)" 		name="frame_id"		default="ladybug_camera$(arg camera)_rotated" />
+	<arg unless="$(arg rotate)" 	name="frame_id"		default="ladybug_camera$(arg camera)" />
 	
 	<node pkg="nodelet" type="nodelet" name="camera$(arg camera)_Rectifier_nodelet" args="load ladybug/Rectifier_nodelet $(arg nodelet_manager)">
 	  	<param name="sub" 	value="/ladybug5/camera$(arg camera)/image_raw" />
@@ -9,5 +13,7 @@
 	  	<param name="sub_info" 	value="/ladybug5/camera$(arg camera)/camera_info" />
 	  	<param name="zoom" 	value="$(arg zoom)" />
 	  	<param name="lut" 	value="$(find ladybug)/calibration/13122828_camera$(arg camera)_h1024_w1224_map_" />
+	  	<param name="frame_id"	value="$(arg frame_id)" />
+	  	<param name="rotate"	value="$(arg rotate)" />
 	</node>
 </launch>

@@ -16,6 +16,7 @@ namespace ladybug {
 Rectifier_nodelet::Rectifier_nodelet() {
 	it_ = NULL;
 	zoom_factor_ = 1;
+	rotate_ = 0;
 }
 
 void
@@ -30,7 +31,8 @@ Rectifier_nodelet::onInit(){
 	n_.param<double>("zoom", zoom_factor_, 1);
 	n_.param<std::string>("sub_info", subscriber_info_topic_, subscribe_topic_ + "_info");
 	n_.param<std::string>("pub_info", publish_info_topic_, publish_topic_ + "_info" );
-
+	n_.param<std::string>("frame_id", frame_id_, "");
+	n_.param<bool>("rotate", rotate_, 1);
 
 	// 2. Info
 	ROS_INFO_NAMED(node_name_, "name: \t%s", node_name_.c_str());
@@ -114,7 +116,8 @@ Rectifier_nodelet::callback(const sensor_msgs::ImageConstPtr &message)
 		cv::resize(map_x, map_x, img_size, 0, 0, cv::INTER_CUBIC);
 	}
 	if(pub_.getNumSubscribers()>0){
-		pub_.publish(rectifyImage(cv_ptr, map_x, map_y));
+		cv_ptr->header.frame_id = frame_id_;
+		pub_.publish(rectifyImage(cv_ptr, map_x, map_y, rotate_));
 	}
 }
 
@@ -124,6 +127,7 @@ Rectifier_nodelet::callback_camera_info(const sensor_msgs::CameraInfo &input_cam
 	cam_info_msg = input_cam_info;
 	//cam_info_msg =
 	cam_info_msg.header = input_cam_info.header;
+	cam_info_msg.header.frame_id = frame_id_;
 
 	//focal length
 	cam_info_msg.P[0] = input_cam_info.P[0] * zoom_factor_; //fx
@@ -139,6 +143,13 @@ Rectifier_nodelet::callback_camera_info(const sensor_msgs::CameraInfo &input_cam
 
 	cam_info_msg.P[2] = (input_cam_info.P[2] * zoom_factor_) - border_left; //cx
 	cam_info_msg.P[6] = (input_cam_info.P[6] * zoom_factor_) - border_top; //cy
+
+	if(rotate_){
+		//rotation to the right
+		float cy = cam_info_msg.P[6];
+		cam_info_msg.P[6] = cam_info_msg.P[2]; 			//cy = cx
+		cam_info_msg.P[2] = input_cam_info.height - cy;  //cx = height - cy
+	}
 
 	pub_info_.publish(cam_info_msg);
 }

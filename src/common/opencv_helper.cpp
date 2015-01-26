@@ -7,16 +7,10 @@
 
 #define SCALE12_16  16
 
-/**
- * Rotate an image
- */
-void rotate(cv::Mat& src, double angle, cv::Mat& dst)
+void rotate90(cv::Mat& src, cv::Mat& dst)
 {
-    int len = std::max(src.cols, src.rows);
-    cv::Point2f pt(len/2., len/2.);
-    cv::Mat r = cv::getRotationMatrix2D(pt, angle, 1.0);
-
-    cv::warpAffine(src, dst, r, cv::Size(len, len));
+	cv::transpose(src, dst);
+	cv::flip(dst, dst,1);
 }
 
 const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
@@ -164,8 +158,11 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 	return out_msg.toImageMsg();
 }
 
-const sensor_msgs::ImagePtr rectifyImage(const cv_bridge::CvImagePtr &cv_ptr, cv::Mat &map_x, cv::Mat &map_y ){
+const sensor_msgs::ImagePtr rectifyImage(const cv_bridge::CvImagePtr &cv_ptr, cv::Mat &map_x, cv::Mat &map_y, bool rotate_up ){
 	cv::remap(cv_ptr->image, cv_ptr->image, map_x, map_y, 0, 0, cv::Scalar(2,2,2));
+	if(rotate_up){
+		rotate90(cv_ptr->image, cv_ptr->image);
+	}
 
 	return cv_ptr->toImageMsg();
 }
