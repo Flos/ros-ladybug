@@ -3,7 +3,7 @@
 	<arg name="connection" 	default="tcp://192.168.1.11:28883" />
 	<arg name="listen" 		default="tcp://*:28882" />
 	
-	<node pkg="nodelet" type="nodelet" name="Receiver_nodelet" args="load ladybug/Receiver_nodelet $(arg nodelet_manager)">
+	<node pkg="nodelet" type="nodelet" name="Receiver_nodelet" args="load ladybug/Receiver_nodelet /$(arg nodelet_manager)">
   		<param name="connection" 	value="$(arg listen)"/>
 	</node>
 
