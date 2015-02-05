@@ -3,6 +3,7 @@
 	<arg name="connect"  	default="1" />
 	<arg name="rectify"		default="1" />
 	<arg name="zoom"		default="2.2" />
+	<arg name="rotate"		default="true" />
 
 	<include if="$(arg connect)" file="$(find ladybug)/launch/receiver.launch">
 		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
@@ -15,5 +16,6 @@
 	<include if="$(arg rectify)" file="$(find ladybug)/launch/rectify_all.launch">
 		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
 		<arg name="zoom"			value="$(arg zoom)" />
+		<arg name="rotate"			value="$(arg rotate)" />
 	</include>            
 </launch>

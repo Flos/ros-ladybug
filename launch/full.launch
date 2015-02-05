@@ -2,6 +2,7 @@
 	<arg name="connect"  	default="1" />
 	<arg name="rectify"		default="1" />
 	<arg name="zoom"		default="2.2" />
+	<arg name="rotate"		default="true" />
 	<arg name="threads"		default="12" />
 	<arg name="nodelet_manager_name" default="nodelet_manager" />
 
@@ -14,5 +15,6 @@
 		<arg name="connect"			value="$(arg connect)" />
 		<arg name="rectify"			value="$(arg rectify)" />
 		<arg name="zoom"			value="$(arg zoom)" />
-	</include>     
+		<arg name="rotate"			value="$(arg rotate)" />
+	</include>
 </launch>
