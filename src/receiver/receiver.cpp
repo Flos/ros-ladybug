@@ -84,7 +84,7 @@ int main(int argc, char **argv){
 				msg.serial_number = message->serial_number();
 				msg.width = message->images(i).width();
 				msg.height = message->images(i).height();
-				msg.header.stamp =  ros::Time(message->time().ulseconds(), message->time().ulmicroseconds()*1000 );
+				msg.header.stamp = sensor_msg.header.stamp;
 				msg.image_type = message->images(i).type();
 				msg.camera = message->camera();
 				msg.color_encoding = message->images(i).color_encoding();
@@ -144,6 +144,11 @@ int main(int argc, char **argv){
 			}
 		}
 		sensor_raw_publisher->publish(sensor_msg);
+
+		ros::Duration delta = ros::Time::now() - sensor_msg.header.stamp;
+		if( delta.sec != 0 ){ // delay should be less then a second
+			ROS_WARN("LADYBUG time differs is %d.%d, is the time syncronized?", delta.sec, delta.nsec);
+		}
 
 		message->Clear();
 		delete message;

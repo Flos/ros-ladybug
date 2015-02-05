@@ -30,6 +30,7 @@ namespace ladybug
 		void publish_image(int type,ladybug::imagePtr &msg);
 		void handle_message(ladybug5_network::pbMessage &recv_msg);
 		std::string name;
+		int max_time_diff;
 		std::string connection;
 		unsigned int sequence;
 		Zmq_service zmq_service;

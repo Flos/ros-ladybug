@@ -24,12 +24,14 @@ namespace ladybug
 		//nh.param("buffer_size", )
 		GOOGLE_PROTOBUF_VERIFY_VERSION;
 		sensor_raw_publisher = NULL;
+		max_time_diff = 0;
 		ROS_INFO_NAMED(name,"pram: connection: %s", connection.c_str());
 		thread_ = boost::shared_ptr<boost::thread>(new boost::thread( boost::bind( &Receiver_nodelet::loop, this )));
 	}
 
 	void
 	Receiver_nodelet::loop(){
+		max_time_diff = 1;
 		zmq_service.cfg_buffer_recv = 20;
 		zmq_service.cfg_linger = 2;
 		zmq_service.cfg_request_timeout = 2;
@@ -91,7 +93,7 @@ namespace ladybug
 				msg_ptr->serial_number = recv_msg.serial_number();
 				msg_ptr->width = recv_msg.images(i).width();
 				msg_ptr->height = recv_msg.images(i).height();
-				msg_ptr->header.stamp =  ros::Time(recv_msg.time().ulseconds(), recv_msg.time().ulmicroseconds()*1000 );
+				msg_ptr->header.stamp = sensor_msg.header.stamp;
 				msg_ptr->image_type = recv_msg.images(i).type();
 				msg_ptr->camera = recv_msg.camera();
 				msg_ptr->color_encoding = recv_msg.images(i).color_encoding();
@@ -157,7 +159,14 @@ namespace ladybug
 			sensor_raw_publisher =  new ros::Publisher();
 			*sensor_raw_publisher = nh.advertise<ladybug::sensors>(getReceiverSensorMsgTopicName(), 1);
 		}
+
 		sensor_raw_publisher->publish(sensor_msg);
+
+		ros::Duration delta = ros::Time::now() - sensor_msg.header.stamp;
+		if( delta.sec != 0 ){ // delay should be less then a second
+			ROS_WARN("LADYBUG time differs is %d.%d, is the time syncronized?", delta.sec, delta.nsec);
+		}
+
 		//ROS_INFO_NAMED(name,"handle message end");
 	}
 
