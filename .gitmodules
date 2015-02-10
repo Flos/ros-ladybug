@@ -1,3 +1,6 @@
 [submodule "src/common/protobuf"]
 	path = src/common/protobuf
 	url = https://github.com/Flos/ladybug_network-protobuf.git
+[submodule "calibration"]
+	path = calibration
+	url = git@github.com:Flos/ladybug_calibration.git
