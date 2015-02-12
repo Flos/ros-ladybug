@@ -19,6 +19,7 @@ namespace ladybug
 		sequence = 0;
 		nh = getMTPrivateNodeHandle();
 		nh.param<std::string>("connection", connection, "tcp://*:28882");
+		nh.param<std::string>("type", type, "grabber");
 
 
 		//nh.param("buffer_size", )
@@ -27,6 +28,7 @@ namespace ladybug
 		max_time_diff = 0;
 		ROS_INFO_NAMED(name,"pram: connection: %s", connection.c_str());
 		thread_ = boost::shared_ptr<boost::thread>(new boost::thread( boost::bind( &Receiver_nodelet::loop, this )));
+		client = nh.serviceClient<ladybug::send_command>("ladybug_service_client");
 	}
 
 	void
@@ -51,6 +53,15 @@ namespace ladybug
 				}
 				else{
 					//ROS_INFO_NAMED(name,"no message");
+					ladybug::send_command cmd;
+					cmd.request.command = type;
+					client.call(cmd); // Restart windows node also
+					if(!cmd.response.success){
+						ROS_WARN_NAMED(name, "Restarting of windows ladybug node of type %s failed: %s", type.c_str(), cmd.response.message.c_str());
+					}
+					else{
+						ROS_INFO_NAMED(name, "restarted windows ladybug node of type %s after timeout",type.c_str());
+					}
 					zmq_service.re_init();
 				}
 				usleep(1);

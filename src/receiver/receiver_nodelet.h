@@ -13,6 +13,7 @@
 #include "helper.h"
 #include <sensor_msgs/image_encodings.h>
 #include "topic_names.h"
+#include <ladybug/send_command.h>
 #include <boost/thread.hpp>
 #include "debug.h"
 
@@ -30,6 +31,7 @@ namespace ladybug
 		void publish_image(int type,ladybug::imagePtr &msg);
 		void handle_message(ladybug5_network::pbMessage &recv_msg);
 		std::string name;
+		std::string type;
 		int max_time_diff;
 		std::string connection;
 		unsigned int sequence;
@@ -38,6 +40,7 @@ namespace ladybug
 		std::map<std::string, ros::Publisher*> publisher_map;
 		ros::Publisher* sensor_raw_publisher;
 		boost::shared_ptr<boost::thread> thread_;
+		ros::ServiceClient client;
 	};
 }
 #endif /* RECEIVERNODELET_H_ */
