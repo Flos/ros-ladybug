@@ -28,7 +28,7 @@ namespace ladybug
 		max_time_diff = 0;
 		ROS_INFO_NAMED(name,"pram: connection: %s", connection.c_str());
 		thread_ = boost::shared_ptr<boost::thread>(new boost::thread( boost::bind( &Receiver_nodelet::loop, this )));
-		client = nh.serviceClient<ladybug::send_command>("ladybug_service_client");
+		client = nh.serviceClient<ladybug::send_command>("/service/windows");
 	}
 
 	void
@@ -36,7 +36,7 @@ namespace ladybug
 		max_time_diff = 1;
 		zmq_service.cfg_buffer_recv = 20;
 		zmq_service.cfg_linger = 2;
-		zmq_service.cfg_request_timeout = 2;
+		zmq_service.cfg_request_timeout = 3;
 		zmq_service.cfg_force_bind = true;
 		zmq_service.init(connection, ZMQ_SUB);
 
