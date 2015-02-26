@@ -133,22 +133,77 @@ Rectifier_nodelet::callback_camera_info(const sensor_msgs::CameraInfo &input_cam
 	cam_info_msg.P[0] = input_cam_info.P[0] * zoom_factor_; //fx
 	cam_info_msg.P[5] = input_cam_info.P[5] * zoom_factor_; //fy
 
+//	double cx0 = cam_info_msg.P[2];
+//	double cy0 = cam_info_msg.P[6];
+//
+//	double cx0_delta_center = cx0 - (input_cam_info.width/2);
+//	double cy0_delta_center = cy0 - (input_cam_info.height/2);
+//
+//	double cx_scaled = cx0_delta_center*zoom_factor_;
+//	double cy_scaled = cy0_delta_center*zoom_factor_;
+//
+//	cam_info_msg.P[2]+= cx_scaled;
+//	cam_info_msg.P[6]+= cy_scaled;
+
+//	tf::Transform tf_cam_info,tf_rotation,tf_cam_result;
+//	tf_cam_info.setIdentity();
+//	tf_cam_info.setBasis(tf::Matrix3x3(cam_info_msg.P[0],cam_info_msg.P[1],cam_info_msg.P[2],
+//			cam_info_msg.P[4],cam_info_msg.P[5],cam_info_msg.P[6],
+//			cam_info_msg.P[8],cam_info_msg.P[9],cam_info_msg.P[10]));
+//
+//	tf_rotation.setIdentity();
+//	tf::Quaternion q; q.setRPY(0.0,0.0,-1.57);
+//	tf_rotation.setRotation(q);
+//
+//	tf_cam_result = tf_cam_info * tf_rotation;
+//
+//	cam_info_msg.P[0] = tf_cam_result.getBasis()[0][0];
+//	cam_info_msg.P[1] = tf_cam_result.getBasis()[0][1];
+//	cam_info_msg.P[2] = tf_cam_result.getBasis()[0][2];
+//	cam_info_msg.P[4] = tf_cam_result.getBasis()[1][0];
+//	cam_info_msg.P[5] = tf_cam_result.getBasis()[1][1];
+//	cam_info_msg.P[6] = tf_cam_result.getBasis()[1][2];
+//	cam_info_msg.P[8] = tf_cam_result.getBasis()[2][0];
+//	cam_info_msg.P[9] = tf_cam_result.getBasis()[2][1];
+//	cam_info_msg.P[10] = tf_cam_result.getBasis()[2][2];
+
+//
+//	printf("cx0: %f, cy0: %f, cx1: %f, cy1: %f\n", cx0, cy0, cam_info_msg.P[2], cam_info_msg.P[6]);
+
 	//calculate principle point in new image
-	int image_width_zoomed = input_cam_info.width  * zoom_factor_;
-	int image_height_zoomed = input_cam_info.height  * zoom_factor_;
+	double image_width_zoomed = (double)input_cam_info.width * zoom_factor_;
+	double image_height_zoomed = (double)input_cam_info.height * zoom_factor_;
 	int border_left =  MAX(0,(image_width_zoomed - input_cam_info.width)/2);
 	int border_top =   MAX(0,(image_height_zoomed - input_cam_info.height)/2);
 
 	ROS_DEBUG_NAMED(node_name_, "border_left: \t%i\t border_top: \t%i", border_left, border_top);
 
-	cam_info_msg.P[2] = (input_cam_info.P[2] * zoom_factor_) - border_left; //cx
-	cam_info_msg.P[6] = (input_cam_info.P[6] * zoom_factor_) - border_top; //cy
+
+//	cam_info_msg.P[2] = (input_cam_info.P[2] * zoom_factor_) - border_left; //cx
+//	cam_info_msg.P[6] = (input_cam_info.P[6] * zoom_factor_) - border_top; //cy
 
 	if(rotate_){
 		//rotation to the right
-		float cy = cam_info_msg.P[6];
-		cam_info_msg.P[6] = cam_info_msg.P[2]; 			//cy = cx
-		cam_info_msg.P[2] = input_cam_info.height - cy;  //cx = height - cy
+		double cy1 = cam_info_msg.P[6];
+		double cx1 = cam_info_msg.P[2];
+
+		double w1 = cam_info_msg.width;
+		double h1 = cam_info_msg.height;
+
+		double cx2 = cy1;
+		double cy2 = w1 - cx1;
+
+		double w2 = h1;
+		double h2 = w1;
+
+		cam_info_msg.P[2] = cx2;
+		cam_info_msg.P[6] = cy2;
+
+		cam_info_msg.width = w2;
+		cam_info_msg.height = h2;
+
+		printf("x1: %f, y1: %f, h1: %f, w1: %f\n", cx1, cy1, h1, w1);
+		printf("x2: %f, y2: %f, h2: %f, w2: %f\n", cx2, cy2, h2, w2);
 	}
 
 	pub_info_.publish(cam_info_msg);
