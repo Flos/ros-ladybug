@@ -158,12 +158,18 @@ const sensor_msgs::ImagePtr createImgPtr(const ladybug::image *message){
 	return out_msg.toImageMsg();
 }
 
-const sensor_msgs::ImagePtr rectifyImage(const cv_bridge::CvImagePtr &cv_ptr, cv::Mat &map_x, cv::Mat &map_y, bool rotate_up ){
-	cv::remap(cv_ptr->image, cv_ptr->image, map_x, map_y, 0, 0, cv::Scalar(2,2,2));
-	if(rotate_up){
-		rotate90(cv_ptr->image, cv_ptr->image);
-	}
+const cv::Mat rectifyImage(cv::Mat image, cv::Mat &map_x, cv::Mat &map_y, bool rotate_up ){
+	cv::remap(image, image, map_x, map_y, 0, 0, cv::Scalar(2,2,2));
+		if(rotate_up){
+			rotate90(image, image);
+		}
+		return image;
+}
 
+
+const sensor_msgs::ImagePtr rectifyImage(const cv_bridge::CvImagePtr &cv_ptr, cv::Mat &map_x, cv::Mat &map_y, bool rotate_up ){
+
+	cv_ptr->image = rectifyImage(cv_ptr->image, map_x, map_y, rotate_up);
 	return cv_ptr->toImageMsg();
 }
 

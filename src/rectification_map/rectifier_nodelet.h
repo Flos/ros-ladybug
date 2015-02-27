@@ -27,7 +27,12 @@ public:
 	virtual ~Rectifier_nodelet();
 	void callback(const sensor_msgs::ImageConstPtr &input);
 	void callback_camera_info(const sensor_msgs::CameraInfo &input_cam_info);
+	void calc_parameters(const sensor_msgs::CameraInfo &cam_info);
+	void find_point(int max, cv::Mat& rectified_point, cv::Point2d& new_c);
+	void zoom_image(cv::Point2d begin_rect, cv::Size& img_size, const cv::Mat &in, cv::Mat &out);
+
 private:
+	boost::mutex init_lock;
 	ros::NodeHandle n_;
 	ros::Subscriber sub_;
 	image_transport::ImageTransport *it_;
@@ -49,8 +54,10 @@ private:
 	std::string subscriber_info_topic_;
 	std::string publish_info_topic_;
 	sensor_msgs::CameraInfo cam_info_msg;
+	bool calculated_rectification_parameters;
+	double cx,cy;
 
-	void load_maps(double zoom_faktor = 1.0);
+	void load_maps();
 };
 
 } /* namespace ladybug */
