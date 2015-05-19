@@ -1,0 +1,49 @@
+<launch>
+	<arg name="rectify"		default="1" />
+	<arg name="zoom"		default="2.2" />
+	<arg name="threads"		default="12" />
+	<arg name="nodelet_manager_name" default="nodelet_manager" />
+	<arg name="nodelet_manager"		default="$(arg nodelet_manager_name)" />
+	<arg name="camera"		default="4" />
+
+	<node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager_name)"  args="manager" output="screen">
+	  	<param name="num_worker_threads" type="int" value="$(arg threads)" />
+	</node>
+	
+	<include file="$(find ladybug)/launch/image.launch">
+		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
+	</include>	
+
+	<include if="$(arg rectify)" file="$(find ladybug)/launch/rectify_single.launch">
+		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
+		<arg name="camera"			value="$(arg camera)" />
+		<arg name="zoom"			value="$(arg zoom)" />
+		<arg name="seperator"		value="zoomed_rotate" />
+		<arg name="rotate"			value="true" />
+	</include>
+	
+	<include if="$(arg rectify)" file="$(find ladybug)/launch/rectify_single.launch">
+		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
+		<arg name="camera"			value="$(arg camera)" />
+		<arg name="zoom"			value="$(arg zoom)" />
+		<arg name="seperator"		value="zoomed" />
+		<arg name="rotate"			value="false" />
+	</include>
+	
+	<include if="$(arg rectify)" file="$(find ladybug)/launch/rectify_single.launch">
+		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
+		<arg name="camera"			value="$(arg camera)" />
+		<arg name="zoom"			value="1" />
+		<arg name="seperator"		value="rotate" />
+		<arg name="rotate"			value="true" />
+	</include>
+	
+	<include if="$(arg rectify)" file="$(find ladybug)/launch/rectify_single.launch">
+		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
+		<arg name="camera"			value="$(arg camera)" />
+		<arg name="zoom"			value="1" />
+		<arg name="seperator"		value="" />
+		<arg name="rotate"			value="false" />
+	</include>
+	
+</launch>

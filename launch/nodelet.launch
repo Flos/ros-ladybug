@@ -4,9 +4,11 @@
 	<arg name="rectify"		default="1" />
 	<arg name="zoom"		default="2.2" />
 	<arg name="rotate"		default="true" />
+	<arg name="mode"		default="grabber" />
 
 	<include if="$(arg connect)" file="$(find ladybug)/launch/receiver.launch">
 		<arg name="nodelet_manager" value="$(arg nodelet_manager)"/>
+		<arg name="type"			value="$(mode)" />
 	</include>
 	
 	<include file="$(find ladybug)/launch/image.launch">

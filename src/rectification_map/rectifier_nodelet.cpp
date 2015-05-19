@@ -74,7 +74,7 @@ void Rectifier_nodelet::zoom_image(cv::Point2d begin_rect,
 		cv::Size& img_size, const cv::Mat &in, cv::Mat &out) {
 
 	cv::Mat tmp;
-	//printf("x: %f y: %f width: %d height: %d in.cols, %d in.rows %d", begin_rect.x, begin_rect.y, img_size.width, img_size.height, in.cols, in.rows);
+	//printf("x: %f y: %f width: %d height: %d in.cols, %d in.rows %d\n", begin_rect.x, begin_rect.y, img_size.width, img_size.height, in.cols, in.rows);
 	cv::resize(in, tmp, img_size, 0, 0, cv::INTER_LINEAR);
 	cv::Rect border = cv::Rect(begin_rect.x, begin_rect.y, in.cols, in.rows);
 	out = tmp(border);
@@ -91,28 +91,42 @@ Rectifier_nodelet::load_maps(){
 
 void Rectifier_nodelet::find_point(int max, cv::Mat& rectified_point,
 		cv::Point2d& new_c) {
-	for (int r = 0; r < rectified_point.rows; ++r) {
-		for (int c = 0; c < rectified_point.cols; ++c) {
-			cv::Point2d current = cv::Point2d(c, r);
-			if (rectified_point.at<cv::Vec3b>(current)[0] > max) {
-				new_c = current;
-				max = rectified_point.at<cv::Vec3b>(current)[0];
+	for (int r = 1; r+1 < rectified_point.rows; ++r) {
+		for (int c = 1; c+1 < rectified_point.cols; ++c) {
+			int bucket = 0;
+			bucket+= rectified_point.at<cv::Vec3b>(cv::Point2d(c-1, r-1))[0];
+			bucket+= rectified_point.at<cv::Vec3b>(cv::Point2d(c, r-1))[0];
+			bucket+= rectified_point.at<cv::Vec3b>(cv::Point2d(c+1, r-1))[0];
+
+			bucket+= rectified_point.at<cv::Vec3b>(cv::Point2d(c-1, r))[0];
+			bucket+= rectified_point.at<cv::Vec3b>(cv::Point2d(c, r))[0];
+			bucket+= rectified_point.at<cv::Vec3b>(cv::Point2d(c+1, r))[0];
+
+
+			bucket+= rectified_point.at<cv::Vec3b>(cv::Point2d(c-1, r+1))[0];
+			bucket+= rectified_point.at<cv::Vec3b>(cv::Point2d(c, r+1))[0];
+			bucket+= rectified_point.at<cv::Vec3b>(cv::Point2d(c+1, r+1))[0];
+
+			if (bucket > max) {
+				new_c = cv::Point2d(c, r);
+				max = bucket;
 			}
 		}
 	}
-	new_c.y+=0.5;
 }
 
 void
 Rectifier_nodelet::calc_parameters(const sensor_msgs::CameraInfo &caminfo){
 	// 1: cx, cy mark
 	init_lock.try_lock();
+
 	cv::Mat rectified_point;
 	cv::Point2d center = cv::Point2d(caminfo.P[2], caminfo.P[6]);
 	cv::Mat empty = cv::Mat::zeros(map_x.rows, map_x.cols, CV_8UC3);
 
-	cv::circle(empty,center,2,cv::Scalar(100,0,0),-1);
-	cv::circle(empty,center,1,cv::Scalar(255,0,0),-1);
+	cv::circle(empty,center,1,cv::Scalar(100,0,0),-1);
+	//cv::circle(empty,center,1,cv::Scalar(255,0,0),-1);
+	empty.at<cv::Vec3b>(center)[0] = 255;
 //
 //	// 2: zoom image
 	if(zoom_factor_ > 1.0){
@@ -213,13 +227,6 @@ Rectifier_nodelet::callback_camera_info(const sensor_msgs::CameraInfo &input_cam
 	if(rotate_){
 		cam_info_msg.width = map_x.rows;
 		cam_info_msg.height = map_x.cols;
-
-		if(zoom_factor_ > 1){
-			// FIXME ( why should I not scale the new focal x when image is rotated and zoomed)
-			// for me it makes no sense but it is needed for correct projection ?!?
-			// while it works fine without it if zoomed and not rotated
-			cam_info_msg.P[0] = input_cam_info.P[0];
-		}
 	}
 	else{
 		cam_info_msg.width = map_x.cols;

@@ -5,13 +5,9 @@
 	<arg name="rotate"		default="true" />
 	<arg name="threads"		default="12" />
 	<arg name="nodelet_manager_name" default="nodelet_manager" />
-	<arg name="mode" 		default="grabber" /> <!-- grabber, panoramic, others see windows config or use "rosservice call /service/windows help"-->
-
-	<node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager_name)"  args="manager" output="screen">
-	  	<param name="num_worker_threads" type="int" value="$(arg threads)" />
-	</node>
+	<arg name="mode" 		default="panoramic" /> 
 	
-	<include file="$(find ladybug)/launch/nodelet.launch">
+	<include file="$(find ladybug)/launch/full.launch">
 		<arg name="nodelet_manager" value="$(arg nodelet_manager_name)"/>
 		<arg name="connect"			value="$(arg connect)" />
 		<arg name="rectify"			value="$(arg rectify)" />

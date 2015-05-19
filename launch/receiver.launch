@@ -2,11 +2,11 @@
 	<arg name="nodelet_manager" default="nodelet_manager" />
 	<arg name="connection" 	default="tcp://192.168.1.11:28883" />
 	<arg name="listen" 		default="tcp://*:28882" />
-	<arg name="type"		default="grabber" /> <!-- grabber, panoramic, others see windows config or use "rosservice call /service/windows help"-->
+	<arg name="mode"		default="grabber" /> <!-- grabber, panoramic, others see windows config or use "rosservice call /service/windows help"-->
 	
 	<node pkg="nodelet" type="nodelet" name="Receiver_nodelet" args="load ladybug/Receiver_nodelet /$(arg nodelet_manager)">
   		<param name="connection" 	value="$(arg listen)"/>
-  		<param name="type"			value="$(arg type)" />
+  		<param name="type"			value="$(arg mode)" />
 	</node>
 
 	<node name="service"	  		  pkg="ladybug" type="service">
